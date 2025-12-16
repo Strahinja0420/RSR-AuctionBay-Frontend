@@ -17,6 +17,11 @@ export type AuthContextType = {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  register: (
+    username: string,
+    email: string,
+    password: string
+  ) => Promise<void>;
   logout: () => void;
 };
 
@@ -33,24 +38,75 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const isAuthenticated = user !== null;
 
   const login = async (email: string, password: string) => {
-    const response = await api.post("/auth/login", {
-      email,
-      password,
-    });
+    //console.log({email,password});
 
-    const { accessToken, user } = response.data;
+    try {
+      const response = await api.post("/auth/login", {
+        email,
+        password,
+      });
+      console.log(response.data);
 
-    localStorage.setItem("accessToken", accessToken);
-    setUser(user);
+      const user = response.data.user;
+      const accessToken = response.data.access_token;
+
+      localStorage.setItem("access_token", accessToken);
+      setUser(user);
+      console.log(`Login successfull your key is : ${accessToken}`);
+    } catch (error: any) {
+      // Axios error
+      if (error.response) {
+        // Backend responded with status code
+        const message =
+          error.response.data?.message || "Invalid email or password";
+
+        throw new Error(message);
+      }
+
+      // Network / unknown error
+      throw new Error("Unable to connect to server");
+    }
+  };
+
+  const register = async (
+    username: string,
+    email: string,
+    password: string
+  ) => {
+    try {
+      const response = await api.post("auth/register", {
+        username,
+        email,
+        password,
+      });
+
+      const user = response.data.user;
+      const accessToken = response.data.access_token;
+      localStorage.setItem("access_token", accessToken);
+      setUser(user);
+      console.log(`Registration successfull your key is : ${accessToken}`);
+    } catch (error: any) {
+      // Axios error
+      if (error.response) {
+        // Backend responded with status code
+        const message =
+          error.response.data?.message || "Invalid email or password";
+
+        throw new Error(message);
+      }
+
+      // Network / unknown error
+      throw new Error("Unable to connect to server");
+    }
   };
 
   const logout = () => {
-    localStorage.removeItem("accessToken");
+    localStorage.removeItem("access_token");
     setUser(null);
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem("access_token");
 
     if (!token) {
       return;
@@ -62,7 +118,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         setUser(response.data);
       } catch (error) {
-        localStorage.removeItem("accessToken");
+        localStorage.removeItem("access_token");
         setUser(null);
       }
     };
@@ -78,6 +134,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         isAuthenticated,
         isLoading,
         login,
+        register,
         logout,
       }}
     >
