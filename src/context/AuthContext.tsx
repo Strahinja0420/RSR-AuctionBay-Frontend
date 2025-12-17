@@ -36,7 +36,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const isAuthenticated = user !== null;
+  const isAuthenticated = !!user;
 
   const login = async (email: string, password: string) => {
     //console.log({email,password});
@@ -110,6 +110,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const token = localStorage.getItem("access_token");
 
     if (!token) {
+      setIsLoading(false);
       return;
     }
 
@@ -118,13 +119,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const response = await api.get("/users/me");
 
         setUser(response.data);
+        //console.log(isAuthenticated);
+        //isAuthenticated == true;
       } catch (error) {
         localStorage.removeItem("access_token");
         setUser(null);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    setIsLoading(false);
     fetchUser();
   }, []);
 

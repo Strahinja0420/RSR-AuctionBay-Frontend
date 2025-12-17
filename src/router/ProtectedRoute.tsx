@@ -7,9 +7,15 @@ type ProtectedRouteProps = {
 };
 
 function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { isAuthenticated } = useAuth();
+  const auth = useAuth();
 
-  if (!isAuthenticated) {
+  if (auth.isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  console.log(auth.isAuthenticated);
+  
+  if (!auth.isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
