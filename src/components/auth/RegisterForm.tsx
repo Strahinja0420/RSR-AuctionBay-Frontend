@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import type { RegisterType } from "../../types/registerTypes";
+import type { RegisterType } from "../../types/Registration.type";
 
 const loginSchema = z.object({
   username: z.string().min(1, "Username is required"),

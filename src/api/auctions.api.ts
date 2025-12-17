@@ -1,4 +1,4 @@
-import type { Auction } from "../types/auction";
+import type { Auction } from "../types/Auction.type";
 import api from "./axios";
 
 export const getAuctions = async () : Promise<Auction[]> =>{

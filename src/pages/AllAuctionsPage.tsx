@@ -1,5 +1,6 @@
-import React from "react";
 import { useAuction } from "../hooks/useAuctions";
+import AuctionsGrid from "../components/auctions/AuctionsGrid";
+import TopBar from "../components/layout/TopBar";
 
 function AllAuctionsPage() {
   const { auctions } = useAuction();
@@ -7,12 +8,8 @@ function AllAuctionsPage() {
   if (auctions.length === 0) return <p>No auctions available</p>;
   return (
     <>
-      {auctions.map((auction) => (
-        <>
-        <p>{auction.title}</p>
-        <p>{auction.buyNowPrice}</p>
-        </>
-      ))}
+      <TopBar />
+      <AuctionsGrid auctions={auctions} />
     </>
   );
 }

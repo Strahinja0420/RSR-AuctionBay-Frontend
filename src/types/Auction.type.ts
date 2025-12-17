@@ -1,3 +1,5 @@
+import type { AuctionImage } from "./AuctionImage.type";
+
 export type AuctionStatus = "draft" | "active" | "ended" | "cancelled";
 
 export interface Auction {
@@ -10,7 +12,7 @@ export interface Auction {
   status: AuctionStatus;
   startDate: string;
   endDate: string;
-  images: string[];
+  images: AuctionImage[];
   owner: {
     id: string;
     username: string;

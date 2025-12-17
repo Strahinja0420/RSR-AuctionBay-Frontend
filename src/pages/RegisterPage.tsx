@@ -1,6 +1,6 @@
 import React from "react";
 import RegisterForm from "../components/auth/RegisterForm";
-import type { RegisterType } from "../types/registerTypes";
+import type { RegisterType } from "../types/Registration.type";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
