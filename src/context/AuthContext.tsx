@@ -24,6 +24,7 @@ export type AuthContextType = {
     password: string
   ) => Promise<void>;
   logout: () => void;
+  updateUser: (username: string, email: string) => Promise<void>;
 };
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -33,7 +34,7 @@ type AuthProviderProps = {
 };
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const isAuthenticated = !!user;
@@ -132,6 +133,29 @@ export function AuthProvider({ children }: AuthProviderProps) {
     fetchUser();
   }, []);
 
+  const updateUser = async (username: string, email: string) => {
+    try {
+      const response = await api.patch("/users/me", {
+        username,
+        email,
+      });
+
+      const updateUser = response.data;
+
+      setUser(updateUser);
+
+      return updateUser;
+    } catch (error: any) {
+      if (error.response) {
+        throw new Error(
+          error.response.data?.message || "Failed to update user"
+        );
+      }
+
+      throw new Error("Unable to connect to server");
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -141,6 +165,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         login,
         register,
         logout,
+        updateUser,
       }}
     >
       {children}

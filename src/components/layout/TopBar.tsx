@@ -1,13 +1,14 @@
 import { CircleDollarSign, User } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import { useState } from "react";
-import AddAuctionForm from "../auctions/AddAuctionForm";
-import ProfileModal from "../profile/ProfileModal";
 
-function TopBar() {
+type Props = {
+  onCreateAuction: () => void;
+  onOpenProfile: () => void;
+};
+
+function TopBar({ onCreateAuction,onOpenProfile }: Props) {
   const { logout } = useAuth();
-  const [open, setOpen] = useState(false);
   return (
     <>
       <div className="flex ml-2 mr-2 mb-10 mt-10">
@@ -42,16 +43,19 @@ function TopBar() {
         </div>
 
         <div className="flex ml-auto gap-2">
-          <button onClick={() => setOpen(true)}>Add auction goes here</button>
-          <AddAuctionForm
-            isOpen={open}
-            onClose={() => setOpen(false)}
-          ></AddAuctionForm>
-          <button onClick={() => setOpen(true)}>Profile goes here</button>
-          <ProfileModal
-            isOpen={open}
-            onClose={() => setOpen(false)}
-          ></ProfileModal>
+          <button
+            className="hover:cursor-pointer"
+            onClick={() => onCreateAuction()}
+          >
+            Add auction goes here
+          </button>
+
+          <button
+            className="hover:cursor-pointer"
+            onClick={() => onOpenProfile()}
+          >
+            Profile goes here
+          </button>
         </div>
       </div>
     </>
