@@ -1,21 +1,18 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Activity, useEffect } from "react";
+import React, { Activity, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useAuth } from "../../../hooks/useAuth";
 
 type Props = {
-  onClose: () => void;
   isOpen: boolean;
+  onClose: () => void;
   onUpdate: (username: string, email: string) => Promise<void>;
 };
 
 const schema = z.object({
   username: z.string().min(1, "Username is required"),
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Enter a valid email address"),
+  email: z.string().email("Enter a valid email address"),
 });
 
 type FormFields = z.infer<typeof schema>;
@@ -51,47 +48,101 @@ function ProfileSettingsForm({ isOpen, onClose, onUpdate }: Props) {
   };
 
   return (
-    <>
-      <Activity mode={isOpen ? "visible" : "hidden"}>
+    <Activity mode={isOpen ? "visible" : "hidden"}>
+      {/* Overlay */}
+      <div
+        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+        onClick={onClose}
+      />
+
+      {/* Modal */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div
-          className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm"
-          onClick={() => onClose()}
-        />
+          className="w-full max-w-md rounded-2xl bg-gray-50 p-6 shadow-2xl"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <h2 className="mb-1 text-xl font-semibold text-red-900 text-center">
+            Profile settings
+          </h2>
+          <p className="mb-6 text-sm text-gray-500 text-center">
+            Update your account information
+          </p>
 
-        <div className="fixed flex inset-0 z-50 bg-white rounded-2xl w-100 h-100 items-center justify-center m-auto">
-          <div>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <h2>Profile settings</h2>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {/* Username */}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">
+                Username
+              </label>
+              <input
+                {...register("username")}
+                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
+                           focus:border-red-900 focus:outline-none
+                           focus:ring-2 focus:ring-red-900/20"
+              />
+              {errors.username && (
+                <span className="text-xs text-red-600">
+                  {errors.username.message}
+                </span>
+              )}
+            </div>
 
-              <div>
-                <label>Username</label>
-                <input type="text" {...register("username")} />
-                {errors.username && <span>{errors.username.message}</span>}
-              </div>
+            {/* Email */}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Email</label>
+              <input
+                {...register("email")}
+                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
+                           focus:border-red-900 focus:outline-none
+                           focus:ring-2 focus:ring-red-900/20"
+              />
+              {errors.email && (
+                <span className="text-xs text-red-600">
+                  {errors.email.message}
+                </span>
+              )}
+            </div>
 
-              <div>
-                <label>Email</label>
-                <input type="email" {...register("email")} />
-                {errors.email && <span>{errors.email.message}</span>}
-              </div>
+            {/* Extra actions */}
+            <div className="flex flex-col gap-2 pt-2 text-sm">
+              <button
+                type="button"
+                className="text-left text-red-900 hover:underline"
+              >
+                Change password
+              </button>
+              <button
+                type="button"
+                className="text-left text-red-900 hover:underline"
+              >
+                Change profile picture
+              </button>
+            </div>
 
-              <div>
-                <a href="#">Change password</a>
-                <br />
-                <a href="#">Change profile picture</a>
-              </div>
+            {/* Footer */}
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={onClose}
+                className="rounded-lg px-4 py-2 text-sm text-gray-700
+                           hover:bg-gray-200 hover:cursor-pointer"
+              >
+                Cancel
+              </button>
 
-              <div>
-                <button className="hover:cursor-pointer" type="button" onClick={onClose}>
-                  Cancel
-                </button>
-                <button className="hover:cursor-pointer" type="submit">Save changes</button>
-              </div>
-            </form>
-          </div>
+              <button
+                type="submit"
+                className="rounded-lg bg-red-900 px-4 py-2 text-sm
+                           font-medium text-white hover:bg-red-800 hover:cursor-pointer"
+              >
+                Save changes
+              </button>
+            </div>
+          </form>
         </div>
-      </Activity>
-    </>
+      </div>
+    </Activity>
   );
 }
 
