@@ -28,7 +28,7 @@ function AuctionCard({ auction }: Props) {
       <h2 className="text-lg font-semibold">{auction.title}</h2>
 
       <p className="text-sm text-gray-500">
-        Current price: €{auction.currentPrice}
+        Current price: €{auction.currentPrice == null ? auction.startingPrice : auction.currentPrice}
       </p>
 
       {auction.buyNowPrice && (
