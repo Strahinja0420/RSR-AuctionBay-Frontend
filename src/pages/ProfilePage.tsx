@@ -3,9 +3,9 @@ import { useAuth } from "../hooks/useAuth";
 import { Link } from "react-router-dom";
 import TopBar from "../components/layout/TopBar";
 import AddAuctionForm from "../components/auctions/AddAuctionFormModal";
-import ProfileModal from "../components/profile/ProfileModal";
 import { useAuction } from "../hooks/useAuctions";
-
+import Profiles from "../components/ProfileModals";
+import ProfileModals from "../components/ProfileModals";
 
 function ProfilePage() {
   const { user, updateUser } = useAuth();
@@ -39,13 +39,10 @@ function ProfilePage() {
           setOpenAuction(false), refetch();
         }}
       ></AddAuctionForm>
-      <ProfileModal
-        onUpdateUser={handleUserUpdate}
+      <ProfileModals
         isOpen={openProfile}
-        onClose={() => {
-          setOpenProfile(false);
-        }}
-      ></ProfileModal>
+        onClose={() => setOpenProfile(false)}
+      ></ProfileModals>
     </>
   );
 }

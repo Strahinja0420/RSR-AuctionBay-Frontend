@@ -3,8 +3,8 @@ import AuctionsGrid from "../components/auctions/AuctionsGrid";
 import TopBar from "../components/layout/TopBar";
 import AddAuctionForm from "../components/auctions/AddAuctionFormModal";
 import { useState } from "react";
-import ProfileModal from "../components/profile/ProfileModal";
 import { useAuth } from "../hooks/useAuth";
+import ProfileModals from "../components/ProfileModals";
 
 function AllAuctionsPage() {
   const { auctions, refetch } = useAuction();
@@ -35,13 +35,10 @@ function AllAuctionsPage() {
           setOpenAuction(false), refetch();
         }}
       ></AddAuctionForm>
-      <ProfileModal
-        onUpdateUser={handleUserUpdate}
+      <ProfileModals
         isOpen={openProfile}
-        onClose={() => {
-          setOpenProfile(false);
-        }}
-      ></ProfileModal>
+        onClose={() => setOpenProfile(false)}
+      ></ProfileModals>
     </>
   );
 }
