@@ -66,57 +66,63 @@ function ChangePasswordModal({ isOpen, onClose, onUpdatePassword }: Props) {
 
           <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
             {/* CURRENT PASSWORD */}
-            <div className="flex justify-between items-center">
-              <label className="text-sm font-medium text-gray-700" htmlFor="">
-                Current password
-              </label>
-              <input
-                type="password"
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
+            <div className="flex flex-col gap-1">
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-medium text-gray-700" htmlFor="">
+                  Current password
+                </label>
+                <input
+                  type="password"
+                  className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
                            focus:border-red-900 focus:outline-none
                            focus:ring-2 focus:ring-red-900/20"
-                {...register("currentPassword")}
-              />
+                  {...register("currentPassword")}
+                />
+              </div>
               {errors.currentPassword && (
-                <span className="text-xs text-red-600">
+                <span className="text-xs text-red-600 text-end">
                   {errors.currentPassword.message}
                 </span>
               )}
             </div>
 
             {/* NEW PASSWORD */}
-            <div className="flex justify-between items-center">
-              <label className="text-sm font-medium text-gray-700">
-                New password
-              </label>
-              <input
-                type="password"
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
+            <div className="flex flex-col gap-1">
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-medium text-gray-700">
+                  New password
+                </label>
+                <input
+                  type="password"
+                  className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
                            focus:border-red-900 focus:outline-none
                            focus:ring-2 focus:ring-red-900/20"
-                {...register("newPassword")}
-              />
+                  {...register("newPassword")}
+                />
+              </div>
               {errors.newPassword && (
-                <span className="text-xs text-red-600">
+                <span className="text-xs text-red-600 text-end">
                   {errors.newPassword.message}
                 </span>
               )}
             </div>
 
             {/* CONFIRM NEW PASSWORD */}
-            <div className="flex justify-between items-center">
-              <label className="text-sm font-medium text-gray-700">
-                Confirm new password
-              </label>
-              <input
-                type="password"
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
+            <div className="flex flex-col gap-1">
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-medium text-gray-700">
+                  Confirm new password
+                </label>
+                <input
+                  type="password"
+                  className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
                            focus:border-red-900 focus:outline-none
                            focus:ring-2 focus:ring-red-900/20"
-                {...register("confirmNewPassword")}
-              />
+                  {...register("confirmNewPassword")}
+                />
+              </div>
               {errors.confirmNewPassword && (
-                <span className="text-xs text-red-600">
+                <span className="text-xs text-red-600 text-end">
                   {errors.confirmNewPassword.message}
                 </span>
               )}

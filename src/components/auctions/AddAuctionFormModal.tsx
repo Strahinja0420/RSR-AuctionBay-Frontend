@@ -1,8 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { Activity, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { createAuction } from "../../api/auctions.api";
+import { Upload } from "lucide-react";
 
 type Props = {
   isOpen: boolean;
@@ -70,110 +71,227 @@ function AddAuctionForm({ isOpen, onClose }: Props) {
       console.log(error);
     }
   };
+  if (!isOpen) return null;
 
   return (
     <>
-      <Activity mode={isOpen ? "visible" : "hidden"}>
-        {/* THE BLUR BEHIND IT */}
-        <div
-          className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm"
-          onClick={() => onClose()}
-        />
+      {/* OVERLAY */}
+      <div
+        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+        onClick={onClose}
+      />
 
-        {/* THE ACTUAL MODAL */}
+      {/* MODAL */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-white max-w-2/3 max-h-2/3 rounded-2xl m-auto"
+          className="w-full max-w-2xl rounded-2xl bg-gray-50 p-6 shadow-2xl"
           onClick={(e) => e.stopPropagation()}
         >
-          <form
-            onSubmit={handleSubmit(onSubmit, (errors) => {
-              console.log("FORM ERRORS:", errors);
-            })}
-            className="space-y-4 max-w-xl"
-          >
-            <input
-              {...register("title")}
-              placeholder="Title"
-              className="w-full border p-2"
-            />
-            {errors.title && <p>{errors.title.message}</p>}
+          {/* HEADER */}
+          <h2 className="mb-1 text-xl font-semibold text-red-900 text-center">
+            Create new auction
+          </h2>
+          <p className="mb-6 text-sm text-gray-500 text-center">
+            Fill in auction details
+          </p>
 
-            <textarea
-              {...register("description")}
-              placeholder="Description"
-              className="w-full border p-2"
-            />
+          {/* FORM */}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {/* TITLE */}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Title</label>
+              <input
+                {...register("title")}
+                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
+                           focus:border-red-900 focus:outline-none
+                           focus:ring-2 focus:ring-red-900/20"
+              />
+              {errors.title && (
+                <span className="text-xs text-red-600">
+                  {errors.title.message}
+                </span>
+              )}
+            </div>
 
-            <input
-              type="number"
-              {...register("startingPrice")}
-              placeholder="Starting price"
-              className="w-full border p-2"
-            />
-            {errors.startingPrice && <p>{errors.startingPrice.message}</p>}
+            {/* DESCRIPTION */}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">
+                Description
+              </label>
+              <textarea
+                {...register("description")}
+                rows={3}
+                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
+                           focus:border-red-900 focus:outline-none
+                           focus:ring-2 focus:ring-red-900/20"
+              />
+            </div>
 
-            <input
-              type="number"
-              {...register("buyNowPrice")}
-              placeholder="Buy now price"
-              className="w-full border p-2"
-            />
+            {/* PRICES */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1">
+                <label className="text-sm font-medium text-gray-700">
+                  Starting price
+                </label>
+                <input
+                  type="number"
+                  {...register("startingPrice")}
+                  className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
+                             focus:border-red-900 focus:outline-none
+                             focus:ring-2 focus:ring-red-900/20"
+                />
+                {errors.startingPrice && (
+                  <span className="text-xs text-red-600">
+                    {errors.startingPrice.message}
+                  </span>
+                )}
+              </div>
 
-            {errors.buyNowPrice && <p>{errors.buyNowPrice.message}</p>}
+              <div className="flex flex-col gap-1">
+                <label className="text-sm font-medium text-gray-700">
+                  Buy now price
+                </label>
+                <input
+                  type="number"
+                  {...register("buyNowPrice")}
+                  className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
+                             focus:border-red-900 focus:outline-none
+                             focus:ring-2 focus:ring-red-900/20"
+                />
+              </div>
+            </div>
 
-            <input
-              type="datetime-local"
-              {...register("startDate")}
-              className="w-full border p-2"
-            />
+            {/* DATES */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1">
+                <label className="text-sm font-medium text-gray-700">
+                  Start date
+                </label>
+                <input
+                  type="datetime-local"
+                  {...register("startDate")}
+                  className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
+                             focus:border-red-900 focus:outline-none
+                             focus:ring-2 focus:ring-red-900/20"
+                />
+                {errors.startDate && (
+                  <span className="text-xs text-red-600">
+                    {errors.startDate.message}
+                  </span>
+                )}
+              </div>
 
-            {errors.startDate && <p>{errors.startDate.message}</p>}
+              <div className="flex flex-col gap-1">
+                <label className="text-sm font-medium text-gray-700">
+                  End date
+                </label>
+                <input
+                  type="datetime-local"
+                  {...register("endDate")}
+                  className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
+                             focus:border-red-900 focus:outline-none
+                             focus:ring-2 focus:ring-red-900/20"
+                />
+                {errors.endDate && (
+                  <span className="text-xs text-red-600">
+                    {errors.endDate.message}
+                  </span>
+                )}
+              </div>
+            </div>
 
-            <input
-              type="datetime-local"
-              {...register("endDate")}
-              className="w-full border p-2"
-            />
+            {/* CATEGORY */}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">
+                Category ID
+              </label>
+              <input
+                type="number"
+                {...register("categoryId")}
+                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
+                           focus:border-red-900 focus:outline-none
+                           focus:ring-2 focus:ring-red-900/20"
+              />
+              {errors.categoryId && (
+                <span className="text-xs text-red-600">
+                  {errors.categoryId.message}
+                </span>
+              )}
+            </div>
 
-            {errors.endDate && <p>{errors.endDate.message}</p>}
+            {/* IMAGES */}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">
+                Images
+              </label>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                id="image-upload"
+                className="hidden"
+                onChange={(e) => {
+                  if (!e.target.files) return;
+                  setImages(Array.from(e.target.files));
+                }}
+              />
+              <label
+                htmlFor="image-upload"
+                className="inline-flex cursor-pointer items-center justify-center
+             rounded-lg border border-amber-400 bg-white px-4 py-2
+             text-sm font-medium text-amber-600
+             hover:bg-amber-50"
+              >
+                <Upload size={16} className="mr-2"></Upload>
+                Choose images
+              </label>
+            </div>
+            {images.length > 0 && (
+              <div className="mt-2 flex gap-2 overflow-x-auto items-center ">
+                {images.map((file, index) => {
+                  const previewUrl = URL.createObjectURL(file);
 
-            <input
-              type="number"
-              {...register("categoryId")}
-              placeholder="Category ID"
-              className="w-full border p-2"
-            />
+                  return (
+                    <div
+                      key={index}
+                      className=" h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-gray-300 mx-auto"
+                    >
+                      <img
+                        src={previewUrl}
+                        alt="Preview"
+                        className="h-full w-full object-cover"
+                        onLoad={() => URL.revokeObjectURL(previewUrl)}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
 
-            {errors.categoryId && <p>{errors.categoryId.message}</p>}
-
-            {/* IMAGE UPLOAD */}
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={(e) => {
-                if (!e.target.files) return;
-                setImages(Array.from(e.target.files));
-              }}
-            />
-
-            <input
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:cursor-pointer"
-            ></input>
-            <div className="mt-4 flex justify-end">
+            {/* FOOTER */}
+            <div className="mt-6 flex justify-end gap-3">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 border rounded hover:cursor-pointer"
+                className="rounded-lg px-4 py-2 text-sm text-gray-700
+                           hover:bg-gray-200"
               >
-                Close
+                Cancel
+              </button>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="rounded-lg bg-red-900 px-4 py-2 text-sm
+                           font-medium text-white hover:bg-red-800
+                           disabled:opacity-60"
+              >
+                Create auction
               </button>
             </div>
           </form>
         </div>
-      </Activity>
+      </div>
     </>
   );
 }
