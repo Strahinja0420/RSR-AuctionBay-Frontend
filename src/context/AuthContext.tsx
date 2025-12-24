@@ -25,6 +25,7 @@ export type AuthContextType = {
   ) => Promise<void>;
   logout: () => void;
   updateUser: (username: string, email: string) => Promise<void>;
+  updatePassword: (oldPassword: string, newPassword: string) => Promise<void>;
 };
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -156,6 +157,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
+  const updatePassword = async (oldPassword: string, newPassword: string) => {
+    try {
+      await api.patch("/users/me/password", {
+        oldPassword,
+        newPassword,
+      });
+    } catch (error: any) {
+      if (error.response) {
+        throw new Error(
+          error.response.data?.message || "Failed to update password"
+        );
+      }
+
+      throw new Error("Unable to connect to server");
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -166,6 +184,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         register,
         logout,
         updateUser,
+        updatePassword,
       }}
     >
       {children}

@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { Activity, useEffect } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useAuth } from "../../../hooks/useAuth";
@@ -8,6 +8,7 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   onUpdate: (username: string, email: string) => Promise<void>;
+  onOpenChangePassword: () => void;
 };
 
 const schema = z.object({
@@ -17,8 +18,14 @@ const schema = z.object({
 
 type FormFields = z.infer<typeof schema>;
 
-function ProfileSettingsForm({ isOpen, onClose, onUpdate }: Props) {
+function ProfileSettingsForm({
+  isOpen,
+  onClose,
+  onUpdate,
+  onOpenChangePassword,
+}: Props) {
   const { user } = useAuth();
+  
 
   const {
     register,
@@ -47,8 +54,10 @@ function ProfileSettingsForm({ isOpen, onClose, onUpdate }: Props) {
     onClose();
   };
 
+  if (!isOpen) return null;
+
   return (
-    <Activity mode={isOpen ? "visible" : "hidden"}>
+    <>
       {/* Overlay */}
       <div
         className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
@@ -109,9 +118,11 @@ function ProfileSettingsForm({ isOpen, onClose, onUpdate }: Props) {
               <button
                 type="button"
                 className="text-left text-red-900 hover:underline"
+                onClick={onOpenChangePassword}
               >
                 Change password
               </button>
+
               <button
                 type="button"
                 className="text-left text-red-900 hover:underline"
@@ -142,7 +153,7 @@ function ProfileSettingsForm({ isOpen, onClose, onUpdate }: Props) {
           </form>
         </div>
       </div>
-    </Activity>
+    </>
   );
 }
 
