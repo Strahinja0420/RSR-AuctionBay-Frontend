@@ -10,10 +10,12 @@ type Props = {
 };
 
 function ProfileModals({ isOpen, onClose }: Props) {
-  const { updateUser,updatePassword } = useAuth();
+  const { updateUser, updatePassword } = useAuth();
 
   const [openSettings, setOpenSettings] = useState(false);
   const [openChangePassword, setOpenChangePassword] = useState(false);
+
+  //TODO change the name to modal and then make the form that goes into the modal a separate file (FOR ALL THE MODALS HERE!!!)
 
   return (
     <>
@@ -29,7 +31,7 @@ function ProfileModals({ isOpen, onClose }: Props) {
       )}
 
       {/* PROFILE SETTINGS */}
-      //TODO change the name to modal and then make the form that goes into the modal a separate file (FOR ALL THE MODALS HERE!!!)
+
       <ProfileSettingsForm
         isOpen={openSettings}
         onClose={() => setOpenSettings(false)}

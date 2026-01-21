@@ -1,73 +1,93 @@
-# React + TypeScript + Vite
+# Auction Bay
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Auction Bay is a full-stack web application used for creating, browsing, and bidding on time-based online auctions.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Frontend: React(Vite), Tailwind CSS
+- Frontend Validation: react-hook-form, zod
+- Backend: NestJS
+- Database: Prisma
+- Authentication: JWT
+- File uploads: Multer
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- User registration and login
+- User profile management
+- User avatar upload/change
+- Browsing all active auctions
+- View auction details and bid history
+- Bidding on auctions
+- Create auctions
+- Edit and delete auctions
+- Automatic auction start
+- Automatic auction end
 
-## Expanding the ESLint configuration
+## Project Structure
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- frontend/ # React frontend application
+- backend/ # NestJS backend API
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Prerequisites
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- Node.js (LTS version recommended)
+- PostgreSQL
+- npm (or yarn / pnpm)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Environment Variables
+
+### Backend (`backend/.env`)
+
+Create a `.env` file inside the `backend` directory with the following variables:
+
+- `DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DB?schema=public`
+- `JWT_SECRET=your_jwt_secret`
+- `CORS_ORIGIN=http://localhost:5173`
+
+### Frontend (`frontend/.env`)
+
+Create a `.env` file inside the `frontend` directory with the following variables:
+
+- `VITE_API_URL=http://localhost:3000`
+
+## Run Locally
+
+### 1) Backend
+
+Navigate to the backend directory and install dependencies:
+
+```bash
+cd backend
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Run database migrations:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npx prisma migrate dev
 ```
+
+Start the backend server in dev mode:
+
+```bash
+npm run start:dev
+```
+
+### 2) Frontend
+
+Open a new terminal window and navigate to the frontend directory:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The frontend application will be available at: http://localhost:5173.
+
+## Links
+
+- Git repository: https://github.com/USERNAME/REPO_NAME
+- Trello board: (to be added)
+- Deployed application: (to be added)
