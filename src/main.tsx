@@ -9,6 +9,7 @@ import RegisterPage from "./pages/RegisterPage.tsx";
 import ProfilePage from "./pages/ProfilePage.tsx";
 import ProtectedRoute from "./router/ProtectedRoute.tsx";
 import AllAuctionsPage from "./pages/AllAuctionsPage.tsx";
+import AuctionPage from "./pages/AuctionPage.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -34,6 +35,7 @@ createRoot(document.getElementById("root")!).render(
               </ProtectedRoute>
             }
           />
+          <Route path="/auction/:id" element={<AuctionPage/>}></Route>
         </Routes>
       </BrowserRouter>
     </AuthProvider>

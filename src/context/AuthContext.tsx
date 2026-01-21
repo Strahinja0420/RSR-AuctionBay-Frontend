@@ -1,9 +1,4 @@
-import React, {
-  createContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useEffect, useState, type ReactNode } from "react";
 import api from "../api/axios";
 
 type User = {
@@ -11,10 +6,12 @@ type User = {
   email: string;
   role: string;
   username: string;
+  avatarUrl?: string | null;
 };
 
 export type AuthContextType = {
   user: User | null;
+  setUser: (user: User | null) => void;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
@@ -178,6 +175,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     <AuthContext.Provider
       value={{
         user,
+        setUser,
         isAuthenticated,
         isLoading,
         login,

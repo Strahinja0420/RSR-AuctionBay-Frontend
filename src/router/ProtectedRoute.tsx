@@ -13,7 +13,7 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
     return <div>Loading...</div>;
   }
 
-  console.log(auth.isAuthenticated);
+  //console.log(auth.isAuthenticated);
   
   if (!auth.isAuthenticated) {
     return <Navigate to="/login" replace />;

@@ -33,36 +33,48 @@ function LoginForm({ onSubmit }: LoginFormProps) {
 
   const submitHandler = (data: FormFields) => {
     //console.log(data);
-    
+
     onSubmit(data.email, data.password);
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit(submitHandler)}>
-        <label>Email</label>
+    <form onSubmit={handleSubmit(submitHandler)} className="space-y-5">
+      {/* EMAIL */}
+      <div>
+        <label className="block mb-1 text-sm text-neutral-300">Email</label>
         <input
-        type = "email"
-        placeholder="Email"
+          type="email"
+          placeholder="you@example.com"
           {...register("email")}
-          aria-invalid={errors.email ? "true" : "false"}
+          className="w-full px-4 py-3 text-white border rounded-lg bg-neutral-900 border-neutral-700 placeholder-neutral-500 focus:outline-none focus:border-rose-700"
         />
         {errors.email && (
-          <div className="text-red-500">{errors.email.message}</div>
+          <p className="mt-1 text-sm text-red-400">{errors.email.message}</p>
         )}
-        <label htmlFor="">Password</label>
+      </div>
+
+      {/* PASSWORD */}
+      <div>
+        <label className="block mb-1 text-sm text-neutral-300">Password</label>
         <input
-        type="password"
-        placeholder="Password"
+          type="password"
+          placeholder="••••••••"
           {...register("password")}
-          aria-invalid={errors.password ? "true" : "false"}
+          className="w-full px-4 py-3 text-white border rounded-lg bg-neutral-900 border-neutral-700 placeholder-neutral-500 focus:outline-none focus:border-rose-700"
         />
         {errors.password && (
-          <div className="text-red-500">{errors.password.message}</div>
+          <p className="mt-1 text-sm text-red-400">{errors.password.message}</p>
         )}
-        <input type="submit"></input>
-      </form>
-    </>
+      </div>
+
+      {/* SUBMIT */}
+      <button
+        type="submit"
+        className="w-full py-3 font-semibold text-white transition rounded-lg bg-rose-800 hover:bg-rose-700"
+      >
+        Login
+      </button>
+    </form>
   );
 }
 
