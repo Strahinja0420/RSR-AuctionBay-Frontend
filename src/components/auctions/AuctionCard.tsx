@@ -6,40 +6,69 @@ type Props = {
 };
 
 function AuctionCard({ auction }: Props) {
-    let imageUrl;
-    if (auction.images.length > 0) {
-        imageUrl = auction.images[0].imageUrl;
-    }
+  const imageUrl =
+    auction.images.length > 0 ? auction.images[0].imageUrl : null;
+
+    //console.log(auction);
+    
 
   return (
     <div
-      className="border rounded-lg p-4 hover:shadow-md transition"
+      className="
+        group
+        bg-white
+        rounded-3xl
+        overflow-hidden
+        border border-[#3B0F19]/15
+        transition
+        hover:shadow-xl
+        hover:-translate-y-1
+      "
     >
-      {auction.images.length > 0 && (
-        <div className="h-40">
-            <img
-          src={`${API_BASE_URL}/uploads/${auction.images[0].imageUrl}`}
-          alt={auction.title}
-          className=" max-h-full max-w-full w-full object-contain rounded-[30px] mb-3"
-        />
+      {/* IMAGE */}
+      <div className="relative h-48 bg-[#F6F2F0] flex items-center justify-center">
+        {imageUrl ? (
+          <img
+            src={`${API_BASE_URL}/uploads/${imageUrl}`}
+            alt={auction.title}
+            className="object-contain w-full h-full p-4 transition rounded-2xl group-hover:scale-105 "
+          />
+        ) : (
+          <span className="text-sm text-[#7A2E3A]">No image</span>
+        )}
+
+        {/* BUY NOW BADGE */}
+        {auction.buyNowPrice && (
+          <div className="absolute top-3 right-3 bg-[#E6C76E] text-[#3B0F19] text-xs font-semibold px-3 py-1 rounded-full shadow">
+            Buy now €{auction.buyNowPrice}
+          </div>
+        )}
+      </div>
+
+      {/* CONTENT */}
+      <div className="flex flex-col gap-2 p-4">
+        {/* TITLE */}
+        <h2 className="text-base font-semibold text-[#3B0F19] line-clamp-2">
+          {auction.title}
+        </h2>
+
+        {/* PRICE */}
+        <div className="flex items-baseline justify-between">
+          <p className="text-sm text-[#5A1D2B]">Current bid</p>
+          <p className="text-lg font-bold text-[#3B0F19]">
+            €
+            {auction.currentPrice}
+          </p>
         </div>
-      )}
 
-      <h2 className="text-lg font-semibold">{auction.title}</h2>
+        {/* DIVIDER */}
+        <div className="h-px bg-[#3B0F19]/10 my-1" />
 
-      <p className="text-sm text-gray-500">
-        Current price: €{auction.currentPrice == null ? auction.startingPrice : auction.currentPrice}
-      </p>
-
-      {auction.buyNowPrice && (
-        <p className="text-sm text-green-600">
-          Buy now: €{auction.buyNowPrice}
+        {/* FOOTER */}
+        <p className="text-xs text-[#7A2E3A]">
+          Ends {new Date(auction.endDate).toLocaleString()}
         </p>
-      )}
-
-      <p className="text-xs text-gray-400 mt-2">
-        Ends: {new Date(auction.endDate).toLocaleString()}
-      </p>
+      </div>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { createAuction } from "../../api/auctions.api";
 import { Upload } from "lucide-react";
+import { useCategories } from "../../hooks/useCategories";
 
 type Props = {
   isOpen: boolean;
@@ -24,6 +25,7 @@ type FieldSchema = z.infer<typeof createAuctionSchema>;
 
 function AddAuctionForm({ isOpen, onClose }: Props) {
   const [images, setImages] = useState<File[]>([]);
+  const { categories } = useCategories();
 
   const {
     register,
@@ -76,22 +78,22 @@ function AddAuctionForm({ isOpen, onClose }: Props) {
   return (
     <>
       {/* OVERLAY */}
-      <div
-        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm" />
 
       {/* MODAL */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center"
+        onClick={onClose}
+      >
         <div
-          className="w-full max-w-2xl rounded-2xl bg-gray-50 p-6 shadow-2xl"
+          className="w-full max-w-2xl p-6 shadow-2xl rounded-2xl bg-gray-50"
           onClick={(e) => e.stopPropagation()}
         >
           {/* HEADER */}
-          <h2 className="mb-1 text-xl font-semibold text-red-900 text-center">
+          <h2 className="mb-1 text-xl font-semibold text-center text-red-900">
             Create new auction
           </h2>
-          <p className="mb-6 text-sm text-gray-500 text-center">
+          <p className="mb-6 text-sm text-center text-gray-500">
             Fill in auction details
           </p>
 
@@ -102,9 +104,7 @@ function AddAuctionForm({ isOpen, onClose }: Props) {
               <label className="text-sm font-medium text-gray-700">Title</label>
               <input
                 {...register("title")}
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
-                           focus:border-red-900 focus:outline-none
-                           focus:ring-2 focus:ring-red-900/20"
+                className="px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg focus:border-red-900 focus:outline-none focus:ring-2 focus:ring-red-900/20"
               />
               {errors.title && (
                 <span className="text-xs text-red-600">
@@ -121,9 +121,7 @@ function AddAuctionForm({ isOpen, onClose }: Props) {
               <textarea
                 {...register("description")}
                 rows={3}
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
-                           focus:border-red-900 focus:outline-none
-                           focus:ring-2 focus:ring-red-900/20"
+                className="px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg focus:border-red-900 focus:outline-none focus:ring-2 focus:ring-red-900/20"
               />
             </div>
 
@@ -136,9 +134,7 @@ function AddAuctionForm({ isOpen, onClose }: Props) {
                 <input
                   type="number"
                   {...register("startingPrice")}
-                  className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
-                             focus:border-red-900 focus:outline-none
-                             focus:ring-2 focus:ring-red-900/20"
+                  className="px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg focus:border-red-900 focus:outline-none focus:ring-2 focus:ring-red-900/20"
                 />
                 {errors.startingPrice && (
                   <span className="text-xs text-red-600">
@@ -154,9 +150,7 @@ function AddAuctionForm({ isOpen, onClose }: Props) {
                 <input
                   type="number"
                   {...register("buyNowPrice")}
-                  className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
-                             focus:border-red-900 focus:outline-none
-                             focus:ring-2 focus:ring-red-900/20"
+                  className="px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg focus:border-red-900 focus:outline-none focus:ring-2 focus:ring-red-900/20"
                 />
               </div>
             </div>
@@ -170,9 +164,7 @@ function AddAuctionForm({ isOpen, onClose }: Props) {
                 <input
                   type="datetime-local"
                   {...register("startDate")}
-                  className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
-                             focus:border-red-900 focus:outline-none
-                             focus:ring-2 focus:ring-red-900/20"
+                  className="px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg focus:border-red-900 focus:outline-none focus:ring-2 focus:ring-red-900/20"
                 />
                 {errors.startDate && (
                   <span className="text-xs text-red-600">
@@ -188,9 +180,7 @@ function AddAuctionForm({ isOpen, onClose }: Props) {
                 <input
                   type="datetime-local"
                   {...register("endDate")}
-                  className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
-                             focus:border-red-900 focus:outline-none
-                             focus:ring-2 focus:ring-red-900/20"
+                  className="px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg focus:border-red-900 focus:outline-none focus:ring-2 focus:ring-red-900/20"
                 />
                 {errors.endDate && (
                   <span className="text-xs text-red-600">
@@ -205,13 +195,17 @@ function AddAuctionForm({ isOpen, onClose }: Props) {
               <label className="text-sm font-medium text-gray-700">
                 Category ID
               </label>
-              <input
-                type="number"
+              <select
                 {...register("categoryId")}
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
-                           focus:border-red-900 focus:outline-none
-                           focus:ring-2 focus:ring-red-900/20"
-              />
+                className="px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg focus:border-red-900 focus:outline-none focus:ring-2 focus:ring-red-900/20"
+              >
+                <option value="">Select category</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
               {errors.categoryId && (
                 <span className="text-xs text-red-600">
                   {errors.categoryId.message}
@@ -237,29 +231,26 @@ function AddAuctionForm({ isOpen, onClose }: Props) {
               />
               <label
                 htmlFor="image-upload"
-                className="inline-flex cursor-pointer items-center justify-center
-             rounded-lg border border-amber-400 bg-white px-4 py-2
-             text-sm font-medium text-amber-600
-             hover:bg-amber-50"
+                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium bg-white border rounded-lg cursor-pointer border-amber-400 text-amber-600 hover:bg-amber-50"
               >
                 <Upload size={16} className="mr-2"></Upload>
                 Choose images
               </label>
             </div>
             {images.length > 0 && (
-              <div className="mt-2 flex gap-2 overflow-x-auto items-center ">
+              <div className="flex items-center gap-2 mt-2 overflow-x-auto ">
                 {images.map((file, index) => {
                   const previewUrl = URL.createObjectURL(file);
 
                   return (
                     <div
                       key={index}
-                      className=" h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-gray-300 mx-auto"
+                      className="w-20 h-20 mx-auto overflow-hidden border border-gray-300 rounded-lg shrink-0"
                     >
                       <img
                         src={previewUrl}
                         alt="Preview"
-                        className="h-full w-full object-cover"
+                        className="object-cover w-full h-full"
                         onLoad={() => URL.revokeObjectURL(previewUrl)}
                       />
                     </div>
@@ -269,12 +260,11 @@ function AddAuctionForm({ isOpen, onClose }: Props) {
             )}
 
             {/* FOOTER */}
-            <div className="mt-6 flex justify-end gap-3">
+            <div className="flex justify-end gap-3 mt-6">
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-lg px-4 py-2 text-sm text-gray-700
-                           hover:bg-gray-200"
+                className="px-4 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-200"
               >
                 Cancel
               </button>
@@ -282,9 +272,7 @@ function AddAuctionForm({ isOpen, onClose }: Props) {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="rounded-lg bg-red-900 px-4 py-2 text-sm
-                           font-medium text-white hover:bg-red-800
-                           disabled:opacity-60"
+                className="px-4 py-2 text-sm font-medium text-white bg-red-900 rounded-lg hover:bg-red-800 disabled:opacity-60"
               >
                 Create auction
               </button>
