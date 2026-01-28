@@ -1,4 +1,4 @@
-import { CircleDollarSign, Plus, User } from "lucide-react";
+import { CircleDollarSign, LayoutDashboard, Plus, User } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { API_BASE_URL } from "../../api/axios";
@@ -43,6 +43,23 @@ function TopBar({ onCreateAuction, onOpenProfile }: Props) {
             <CircleDollarSign size={16} />
             Auctions
           </NavLink>
+
+          {user?.role === "admin" && (
+            <NavLink
+              to="/admin/categories"
+              className={({ isActive }) =>
+                `flex items-center gap-1 px-4 rounded-full text-sm transition
+                ${
+                  isActive
+                    ? "bg-[#E6C76E] text-[#3B0F19] font-semibold"
+                    : "text-[#E5E7EB] hover:text-[#E6C76E]"
+                }`
+              }
+            >
+              <LayoutDashboard size={16} />
+              Categories
+            </NavLink>
+          )}
 
           <NavLink
             to="/profile"

@@ -6,3 +6,17 @@ export const getCategories = async (): Promise<Category[]> => {
 
   return res.data;
 };
+
+export const deleteCategory = async (id: number): Promise<void> => {
+  await api.delete(`/categories/${id}`);
+};
+
+export const createCategory = async (data: Partial<Category>): Promise<Category> => {
+  const res = await api.post("/categories", data);
+  return res.data;
+};
+
+export const updateCategory = async (id: number, data: Partial<Category>): Promise<Category> => {
+  const res = await api.patch(`/categories/${id}`, data);
+  return res.data;
+};

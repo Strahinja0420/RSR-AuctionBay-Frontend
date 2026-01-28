@@ -14,6 +14,7 @@ export interface Auction {
   startDate: string;
   endDate: string;
   winnerId: string;
+  categoryId: number;
   images: AuctionImage[];
   owner: {
     id: string;
