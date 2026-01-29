@@ -20,15 +20,13 @@ function ProfileModals({ isOpen, onClose }: Props) {
   return (
     <>
       {/* PROFILE MENU */}
-      {isOpen && (
-        <ProfileModal
-          isOpen={isOpen}
-          onClose={onClose}
-          onOpenSettings={() => {
-            onClose(), setOpenSettings(true);
-          }}
-        />
-      )}
+      <ProfileModal
+        isOpen={isOpen}
+        onClose={onClose}
+        onOpenSettings={() => {
+          onClose(), setOpenSettings(true);
+        }}
+      />
 
       {/* PROFILE SETTINGS */}
 

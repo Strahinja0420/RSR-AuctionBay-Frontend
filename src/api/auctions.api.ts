@@ -49,3 +49,14 @@ export const bidOnAuction = async (bid: number, id: string) => {
     throw error;
   }
 };
+
+export const deleteAuction = async (id: string) => {
+  const response = await api.delete(`/auctions/${id}`);
+  return response.data;
+};
+
+export const updateAuction = async (id: string, data: any) => {
+  const response = await api.patch(`/auctions/${id}`, data);
+  return response.data;
+};
+
