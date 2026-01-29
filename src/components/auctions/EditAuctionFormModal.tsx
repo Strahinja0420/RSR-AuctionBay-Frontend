@@ -1,81 +1,97 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { createAuction } from "../../api/auctions.api";
-import {
-  Upload,
-  X,
-  Gavel,
-  FileText,
-  DollarSign,
-  Calendar,
-  Tag,
-  Image as ImageIcon,
-} from "lucide-react";
+import { updateAuction } from "../../api/auctions.api";
 import { useCategories } from "../../hooks/useCategories";
+import type { Auction } from "../../types/Auction.type";
 import { motion, AnimatePresence } from "framer-motion";
+import { X, Edit3, FileText, DollarSign, Calendar, Tag } from "lucide-react";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  auction: Auction;
 };
 
-const createAuctionSchema = z.object({
+const editAuctionSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
-  startingPrice: z.string().min(1, "Starting price is required"),
+  startingPrice: z.coerce.number().min(1, "Starting price must be at least 1"),
   buyNowPrice: z.coerce.number().positive().optional(),
   startDate: z.string().min(1, "Start date is required"),
   endDate: z.string().min(1, "End date is required"),
   categoryId: z.coerce.number().int().min(1, "Category is required"),
 });
 
-type FieldSchema = z.infer<typeof createAuctionSchema>;
+type FieldSchema = z.infer<typeof editAuctionSchema>;
 
-function AddAuctionForm({ isOpen, onClose }: Props) {
-  const [images, setImages] = useState<File[]>([]);
+function EditAuctionForm({ isOpen, onClose, auction }: Props) {
   const { categories } = useCategories();
+
+  const formatDateForInput = (dateString: string) => {
+    const date = new Date(dateString);
+    const z = (n: number) => (n < 10 ? "0" : "") + n;
+    return (
+      date.getFullYear() +
+      "-" +
+      z(date.getMonth() + 1) +
+      "-" +
+      z(date.getDate()) +
+      "T" +
+      z(date.getHours()) +
+      ":" +
+      z(date.getMinutes())
+    );
+  };
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(createAuctionSchema),
+    resolver: zodResolver(editAuctionSchema),
+    defaultValues: {
+      title: auction.title,
+      description: auction.description,
+      startingPrice: auction.startingPrice,
+      buyNowPrice: auction.buyNowPrice,
+      startDate: formatDateForInput(auction.startDate),
+      endDate: formatDateForInput(auction.endDate),
+      categoryId: auction.categoryId,
+    },
   });
 
+  useEffect(() => {
+    if (isOpen) {
+      reset({
+        title: auction.title,
+        description: auction.description,
+        startingPrice: auction.startingPrice,
+        buyNowPrice: auction.buyNowPrice,
+        startDate: formatDateForInput(auction.startDate),
+        endDate: formatDateForInput(auction.endDate),
+        categoryId: auction.categoryId,
+      });
+    }
+  }, [isOpen, auction, reset]);
+
   const onSubmit = async (data: FieldSchema) => {
-    const formData = new FormData();
-    formData.append("title", data.title);
-    formData.append("description", data.description ?? "");
-    formData.append("startingPrice", String(data.startingPrice));
-    if (data.buyNowPrice !== undefined) {
-      formData.append("buyNowPrice", String(data.buyNowPrice));
-    }
-    formData.append("startDate", new Date(data.startDate).toISOString());
-    formData.append("endDate", new Date(data.endDate).toISOString());
-    formData.append("categoryId", String(data.categoryId));
-
-    images.forEach((file) => {
-      formData.append("images", file);
-    });
-
-    /*
-    for (const [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
-    */
+    const updateData = {
+      ...data,
+      startDate: new Date(data.startDate).toISOString(),
+      endDate: new Date(data.endDate).toISOString(),
+    };
 
     try {
-      //console.log("axios sending");
-
-      await createAuction(formData);
-      alert("Auction created successfully!");
+      await updateAuction(auction.id, updateData);
+      alert("Auction updated successfully!");
       onClose();
     } catch (error) {
       console.log(error);
+      alert("Failed to update auction");
     }
   };
 
@@ -118,20 +134,20 @@ function AddAuctionForm({ isOpen, onClose }: Props) {
                   <X size={20} />
                 </button>
                 <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#7A2E3A]/5 text-[#7A2E3A]">
-                  <Gavel size={24} />
+                  <Edit3 size={24} />
                 </div>
                 <h2 className="text-2xl font-bold text-[#3B0F19]">
-                  Launch New Auction
+                  Edit Auction Details
                 </h2>
                 <p className="mt-1 text-sm text-gray-500">
-                  Set the stage for your next big sale
+                  Refine your listing for maximum impact
                 </p>
               </div>
 
               {/* FORM CONTENT */}
               <div className="overflow-y-auto p-8 custom-scrollbar">
                 <form
-                  id="create-auction-form"
+                  id="edit-auction-form"
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-6"
                 >
@@ -273,67 +289,6 @@ function AddAuctionForm({ isOpen, onClose }: Props) {
                       </p>
                     )}
                   </div>
-
-                  {/* IMAGES */}
-                  <div className="space-y-3">
-                    <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                      <ImageIcon size={16} className="text-gray-400" />
-                      Product Images
-                    </label>
-
-                    <div className="flex flex-wrap gap-4">
-                      <input
-                        type="file"
-                        multiple
-                        accept="image/*"
-                        id="image-upload"
-                        className="hidden"
-                        onChange={(e) => {
-                          if (!e.target.files) return;
-                          setImages(Array.from(e.target.files));
-                        }}
-                      />
-
-                      <label
-                        htmlFor="image-upload"
-                        className="flex h-32 w-32 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 transition-all hover:border-[#7A2E3A] hover:bg-[#7A2E3A]/5 group"
-                      >
-                        <Upload
-                          size={24}
-                          className="mb-2 text-gray-400 transition-colors group-hover:text-[#7A2E3A]"
-                        />
-                        <span className="text-xs font-bold text-gray-500 group-hover:text-[#7A2E3A]">
-                          Upload
-                        </span>
-                      </label>
-
-                      {images.map((file, index) => {
-                        const previewUrl = URL.createObjectURL(file);
-                        return (
-                          <div
-                            key={index}
-                            className="group relative h-32 w-32 overflow-hidden rounded-2xl border border-gray-100 shadow-sm"
-                          >
-                            <img
-                              src={previewUrl}
-                              alt="Preview"
-                              className="h-full w-full object-cover transition-transform group-hover:scale-110"
-                              onLoad={() => URL.revokeObjectURL(previewUrl)}
-                            />
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setImages(images.filter((_, i) => i !== index))
-                              }
-                              className="absolute right-2 top-2 rounded-full bg-black/50 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
-                            >
-                              <X size={14} />
-                            </button>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
                 </form>
               </div>
 
@@ -351,13 +306,13 @@ function AddAuctionForm({ isOpen, onClose }: Props) {
                   Cancel
                 </button>
                 <button
-                  form="create-auction-form"
+                  form="edit-auction-form"
                   type="submit"
                   disabled={isSubmitting}
                   className="flex-[2] rounded-xl bg-[#7A2E3A] px-4 py-3 text-sm font-bold text-white shadow-lg shadow-[#7A2E3A]/20 transition-all hover:bg-[#4A1622] hover:shadow-[#4A1622]/30 disabled:opacity-50"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  {isSubmitting ? "Processing..." : "Create Auction"}
+                  {isSubmitting ? "Updating..." : "Update Auction"}
                 </button>
               </div>
             </motion.div>
@@ -369,4 +324,4 @@ function AddAuctionForm({ isOpen, onClose }: Props) {
   );
 }
 
-export default AddAuctionForm;
+export default EditAuctionForm;

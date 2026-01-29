@@ -10,18 +10,21 @@ import type { Bid } from "../types/Bid.type";
 import { useBidders } from "../hooks/useBidders";
 import PageWithTopBar from "../components/layout/PageWithTopBar";
 import { fetchBidsByAuction } from "../api/bids.api";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 function AuctionPage() {
   const { state } = useLocation();
   const { id } = useParams();
   const auction = state?.auction;
 
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
   const bidSchema = z.object({
     bid: z
-      .number("You must enter something")
+      .number()
       .positive("Bid must be positive")
-      .refine((v) => v > auction.currentPrice, {
-        message: `Bid must be higher than current price (${auction.currentPrice}€)`,
+      .refine((v) => !auction || v > auction.currentPrice, {
+        message: `Bid must be higher than current price (${auction?.currentPrice ?? 0}€)`,
       }),
   });
 
@@ -35,8 +38,8 @@ function AuctionPage() {
     return <div className="p-6">Loading auction…</div>;
   }
 
-  const imageUrl =
-    auction.images.length > 0 ? auction.images[0].imageUrl : null;
+  const images = auction.images;
+  const currentImage = images.length > 0 ? images[selectedImageIndex] : null;
 
   useEffect(() => {
     if (!id) return;
@@ -56,7 +59,6 @@ function AuctionPage() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm<FormFields>({
     resolver: zodResolver(bidSchema),
@@ -76,6 +78,14 @@ function AuctionPage() {
     }
   };
 
+  const nextImage = () => {
+    setSelectedImageIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = () => {
+    setSelectedImageIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
   return (
     <div className="flex flex-col w-full min-h-screen bg-gray-50">
       {/* TOP BAR */}
@@ -86,20 +96,70 @@ function AuctionPage() {
         className="grid flex-1 grid-cols-1 gap-6 p-6 overflow-auto lg:grid-cols-2"
         style={{ height: "calc(100vh - 100px)" }}
       >
-        {/* IMAGE CARD */}
-        <div className="relative w-full h-full overflow-hidden bg-white border shadow-md rounded-3xl border-neutral-200">
-          {imageUrl ? (
-            <img
-              src={`${API_BASE_URL}/uploads/${imageUrl}`}
-              alt={auction.title}
-              className="w-full h-full "
-            />
-          ) : (
-            <div className="flex items-center justify-center w-full h-full text-neutral-400">
-              No image available
+        {/* LEFT COLUMN: IMAGE CAROUSEL */}
+        <div className="flex flex-col h-full gap-4">
+          <div className="relative flex-1 overflow-hidden bg-white border shadow-md rounded-3xl border-neutral-200">
+            {currentImage ? (
+              <img
+                src={`${API_BASE_URL}/uploads/${currentImage.imageUrl}`}
+                alt={auction.title}
+                className="object-contain w-full h-full"
+              />
+            ) : (
+              <div className="flex items-center justify-center w-full h-full text-neutral-400">
+                No image available
+              </div>
+            )}
+          </div>
+
+          {/* THUMBNAIL GALLERY */}
+          {images.length > 1 && (
+            <div className="relative flex items-center w-full px-10 py-2 bg-white border shadow-sm group h-28 rounded-3xl border-neutral-200">
+              {/* Navigation Arrows */}
+              <button
+                onClick={prevImage}
+                className="absolute left-2 z-10 p-1 transition-colors bg-white border rounded-full shadow-sm text-[#7A2E3A] hover:bg-gray-50 border-neutral-200"
+              >
+                <ChevronLeft size={24} />
+              </button>
+
+              <div className="relative flex justify-center w-full h-full overflow-hidden">
+                <div 
+                  className="flex items-center gap-4 transition-transform duration-500 ease-in-out"
+                  style={{ 
+                    transform: `translateX(calc(50% - ${selectedImageIndex * 112 + 56}px))` 
+                  }}
+                >
+                  {images.map((img: any, idx: number) => (
+                    <div
+                      key={img.id}
+
+                      onClick={() => setSelectedImageIndex(idx)}
+                      className={`
+                        relative shrink-0 w-24 h-20 rounded-2xl overflow-hidden cursor-pointer transition-all duration-300
+                        ${selectedImageIndex === idx ? 'ring-2 ring-[#7A2E3A] scale-110 shadow-lg z-10' : 'opacity-40 grayscale hover:opacity-100 hover:grayscale-0 scale-90'}
+                      `}
+                    >
+                      <img
+                        src={`${API_BASE_URL}/uploads/${img.imageUrl}`}
+                        alt={`Gallery ${idx}`}
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                onClick={nextImage}
+                className="absolute right-2 z-10 p-1 transition-colors bg-white border rounded-full shadow-sm text-[#7A2E3A] hover:bg-gray-50 border-neutral-200"
+              >
+                <ChevronRight size={24} />
+              </button>
             </div>
           )}
         </div>
+
 
         {/* RIGHT COLUMN */}
         <div className="flex flex-col gap-6">
