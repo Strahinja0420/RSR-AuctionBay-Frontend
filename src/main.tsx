@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
-import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/LoginPage.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
 import ProfilePage from "./pages/ProfilePage.tsx";
@@ -45,9 +45,9 @@ createRoot(document.getElementById("root")!).render(
               </AdminRoute>
             }
           />
-          <Route path="/auction/:id" element={<AuctionPage/>}></Route>
+          <Route path="/auction/:id" element={<AuctionPage />}></Route>
         </Routes>
       </BrowserRouter>
     </AuthProvider>
-  </StrictMode>
+  </StrictMode>,
 );

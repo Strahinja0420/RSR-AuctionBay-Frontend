@@ -22,7 +22,6 @@ function RegisterForm({ onSubmit }: RegisterFormProps) {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<FormFields>({
     resolver: zodResolver(loginSchema),
@@ -41,7 +40,6 @@ function RegisterForm({ onSubmit }: RegisterFormProps) {
 
   return (
     <form onSubmit={handleSubmit(submitHandler)} className="space-y-5">
-
       {/* USERNAME */}
       <div>
         <label className="block mb-1 text-sm text-neutral-300">Username</label>

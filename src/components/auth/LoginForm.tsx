@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -21,7 +20,6 @@ function LoginForm({ onSubmit }: LoginFormProps) {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<FormFields>({
     resolver: zodResolver(loginSchema),

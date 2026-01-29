@@ -1,4 +1,3 @@
-import React from "react";
 import RegisterForm from "../components/auth/RegisterForm";
 import type { RegisterType } from "../types/Registration.type";
 import { useAuth } from "../hooks/useAuth";

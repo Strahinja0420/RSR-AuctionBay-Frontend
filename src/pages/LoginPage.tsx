@@ -1,4 +1,3 @@
-import React from "react";
 import LoginForm from "../components/auth/LoginForm";
 import { useAuth } from "../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
@@ -41,7 +40,10 @@ function LoginPage() {
 
         <p className="mt-6 text-sm text-center text-neutral-400">
           Don’t have an account?{" "}
-          <Link to={'/register'} className="cursor-pointer text-rose-600 hover:text-rose-500 hover:underline">
+          <Link
+            to={"/register"}
+            className="cursor-pointer text-rose-600 hover:text-rose-500 hover:underline"
+          >
             Register
           </Link>
         </p>
