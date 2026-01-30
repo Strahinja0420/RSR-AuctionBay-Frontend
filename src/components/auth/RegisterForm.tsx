@@ -10,6 +10,7 @@ const loginSchema = z.object({
     .string()
     .min(1, "Password is required")
     .min(8, "Password must be at least 8 characters"),
+  isAdmin: z.boolean().optional(),
 });
 
 type FormFields = z.infer<typeof loginSchema>;
@@ -29,13 +30,17 @@ function RegisterForm({ onSubmit }: RegisterFormProps) {
       username: "",
       email: "",
       password: "",
+      isAdmin: false,
     },
   });
 
   const submitHandler = (data: FormFields) => {
     //console.log(data);
 
-    onSubmit(data);
+    onSubmit({
+      ...data,
+      role: data.isAdmin ? "admin" : "user",
+    });
   };
 
   return (
@@ -83,6 +88,19 @@ function RegisterForm({ onSubmit }: RegisterFormProps) {
         {errors.password && (
           <p className="mt-1 text-sm text-red-400">{errors.password.message}</p>
         )}
+      </div>
+
+      {/* ADMIN CHECKBOX */}
+      <div className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          id="isAdmin"
+          {...register("isAdmin")}
+          className="w-4 h-4 text-rose-600 border-gray-300 rounded focus:ring-rose-500"
+        />
+        <label htmlFor="isAdmin" className="text-sm text-neutral-300">
+          Register as Admin
+        </label>
       </div>
 
       {/* SUBMIT */}
