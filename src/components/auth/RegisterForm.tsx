@@ -30,7 +30,7 @@ function RegisterForm({ onSubmit }: RegisterFormProps) {
       username: "",
       email: "",
       password: "",
-      isAdmin: false,
+      isAdmin: true,
     },
   });
 
