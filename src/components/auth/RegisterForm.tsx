@@ -35,7 +35,7 @@ function RegisterForm({ onSubmit }: RegisterFormProps) {
   });
 
   const submitHandler = (data: FormFields) => {
-    //console.log(data);
+    console.log(data);
 
     onSubmit({
       ...data,

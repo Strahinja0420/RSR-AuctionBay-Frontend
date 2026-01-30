@@ -9,7 +9,7 @@ function RegisterPage() {
 
   const handleSubmit = async (data: RegisterType) => {
     try {
-      await register(data.username, data.email, data.password);
+      await register(data.username, data.email, data.password, data.role);
       navigate("/profile");
     } catch (error) {
       console.log(error);

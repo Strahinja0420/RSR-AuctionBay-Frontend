@@ -18,7 +18,8 @@ export type AuthContextType = {
   register: (
     username: string,
     email: string,
-    password: string
+    password: string,
+    role?: string,
   ) => Promise<void>;
   logout: () => void;
   updateUser: (username: string, email: string) => Promise<void>;
@@ -71,13 +72,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const register = async (
     username: string,
     email: string,
-    password: string
+    password: string,
+    role?: string,
   ) => {
     try {
       const response = await api.post("auth/register", {
         username,
         email,
         password,
+        role,
       });
 
       const user = response.data.user;
@@ -146,7 +149,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (error: any) {
       if (error.response) {
         throw new Error(
-          error.response.data?.message || "Failed to update user"
+          error.response.data?.message || "Failed to update user",
         );
       }
 
@@ -163,7 +166,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (error: any) {
       if (error.response) {
         throw new Error(
-          error.response.data?.message || "Failed to update password"
+          error.response.data?.message || "Failed to update password",
         );
       }
 
