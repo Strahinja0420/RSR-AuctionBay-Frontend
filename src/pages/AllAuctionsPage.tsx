@@ -3,13 +3,22 @@ import AuctionsGrid from "../components/auctions/AuctionsGrid";
 import PageWithTopBar from "../components/layout/PageWithTopBar";
 
 function AllAuctionsPage() {
-  const { auctions} = useAuction();
+  const { auctions } = useAuction();
 
-  if (auctions.length === 0) return <p>No auctions available</p>;
+  const activeAuctions = auctions.filter((a) => a.status === "active");
+
   return (
     <>
-    <PageWithTopBar/>
-      <AuctionsGrid auctions={auctions} title="Auctions" onlyActive ={true} />
+      <PageWithTopBar />
+      {activeAuctions.length === 0 ? (
+        <p className="text-center text-3xl mt-10 font-bold text-[#3B0F19]">
+          No auctions available currently.
+          <br />
+          Check back soon!
+        </p>
+      ) : (
+        <AuctionsGrid auctions={activeAuctions} title="Auctions" />
+      )}
     </>
   );
 }

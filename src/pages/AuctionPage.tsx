@@ -124,20 +124,19 @@ function AuctionPage() {
               </button>
 
               <div className="relative flex justify-center w-full h-full overflow-hidden">
-                <div 
+                <div
                   className="flex items-center gap-4 transition-transform duration-500 ease-in-out"
-                  style={{ 
-                    transform: `translateX(calc(50% - ${selectedImageIndex * 112 + 56}px))` 
+                  style={{
+                    transform: `translateX(calc(50% - ${selectedImageIndex * 112 + 56}px))`,
                   }}
                 >
                   {images.map((img: any, idx: number) => (
                     <div
                       key={img.id}
-
                       onClick={() => setSelectedImageIndex(idx)}
                       className={`
                         relative shrink-0 w-24 h-20 rounded-2xl overflow-hidden cursor-pointer transition-all duration-300
-                        ${selectedImageIndex === idx ? 'ring-2 ring-[#7A2E3A] scale-110 shadow-lg z-10' : 'opacity-40 grayscale hover:opacity-100 hover:grayscale-0 scale-90'}
+                        ${selectedImageIndex === idx ? "ring-2 ring-[#7A2E3A] scale-110 shadow-lg z-10" : "opacity-40 grayscale hover:opacity-100 hover:grayscale-0 scale-90"}
                       `}
                     >
                       <img
@@ -159,7 +158,6 @@ function AuctionPage() {
             </div>
           )}
         </div>
-
 
         {/* RIGHT COLUMN */}
         <div className="flex flex-col gap-6">
@@ -185,6 +183,7 @@ function AuctionPage() {
                   </p>
                 )}
 
+                {/* BIDDING FORM */}
                 <form
                   onSubmit={handleSubmit(onSubmit)}
                   className="flex gap-4 mt-4 ml-auto"

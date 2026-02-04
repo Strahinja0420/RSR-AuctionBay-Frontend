@@ -11,7 +11,11 @@ function LandingPage() {
       <header className="flex items-center justify-between px-8 py-5">
         {/* LOGO */}
         <div className="flex items-center gap-2">
-          <img src="/logo.png" alt="Auction Bay logo" className="w-auto h-15 rounded-2xl" />
+          <img
+            src="/logo.png"
+            alt="Auction Bay logo"
+            className="w-auto h-15 rounded-2xl"
+          />
         </div>
 
         {/* AUTH BUTTONS */}

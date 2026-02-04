@@ -18,7 +18,7 @@ function AuctionCard({ auction }: Props) {
     auction.images.length > 0 ? auction.images[0].imageUrl : null;
 
   const isOwner = user?.id === auction.owner.id;
-  const isActive = auction.status === "active";
+  const isActive = auction.status === "active" || auction.status === "draft";
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -27,7 +27,6 @@ function AuctionCard({ auction }: Props) {
       try {
         await deleteAuction(auction.id);
       } catch (error) {
-
         console.error(error);
         alert("Failed to delete auction");
       }
@@ -42,6 +41,7 @@ function AuctionCard({ auction }: Props) {
 
   return (
     <>
+      {/* AUCTION CARD CONTAINER */}
       <div
         className="
           group
@@ -74,7 +74,6 @@ function AuctionCard({ auction }: Props) {
               Buy now €{auction.buyNowPrice}
             </div>
           )}
-
         </div>
 
         {/* CONTENT */}
@@ -130,7 +129,6 @@ function AuctionCard({ auction }: Props) {
         }}
         auction={auction}
       />
-
     </>
   );
 }

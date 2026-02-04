@@ -20,8 +20,20 @@ const editAuctionSchema = z.object({
   description: z.string().optional(),
   startingPrice: z.coerce.number().min(1, "Starting price must be at least 1"),
   buyNowPrice: z.coerce.number().positive().optional(),
-  startDate: z.string().min(1, "Start date is required"),
-  endDate: z.string().min(1, "End date is required"),
+  startDate: z
+    .string()
+    .min(1, "Start date is required")
+    .refine(
+      (date) => new Date(date) > new Date(Date.now()),
+      "Start date must be in the future",
+    ),
+  endDate: z
+    .string()
+    .min(1, "End date is required")
+    .refine(
+      (date) => new Date(date) > new Date(Date.now()),
+      "End date must be in the future",
+    ),
   categoryId: z.coerce.number().int().min(1, "Category is required"),
 });
 
@@ -53,15 +65,6 @@ function EditAuctionForm({ isOpen, onClose, auction }: Props) {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(editAuctionSchema),
-    defaultValues: {
-      title: auction.title,
-      description: auction.description,
-      startingPrice: auction.startingPrice,
-      buyNowPrice: auction.buyNowPrice,
-      startDate: formatDateForInput(auction.startDate),
-      endDate: formatDateForInput(auction.endDate),
-      categoryId: auction.categoryId,
-    },
   });
 
   useEffect(() => {
@@ -80,18 +83,27 @@ function EditAuctionForm({ isOpen, onClose, auction }: Props) {
 
   const onSubmit = async (data: FieldSchema) => {
     const updateData = {
-      ...data,
+      title: data.title,
+      description: data.description,
+      startingPrice: data.startingPrice,
+      buyNowPrice: data.buyNowPrice,
       startDate: new Date(data.startDate).toISOString(),
       endDate: new Date(data.endDate).toISOString(),
+      categoryId: data.categoryId,
+      winnerId: "",
+      status: "active",
     };
+
+    console.log("📤 Sending update data:", updateData);
 
     try {
       await updateAuction(auction.id, updateData);
       alert("Auction updated successfully!");
       onClose();
-    } catch (error) {
-      console.log(error);
-      alert("Failed to update auction");
+    } catch (error: any) {
+      alert(
+        `Failed to update auction: ${error.response?.data?.message || error.message}`,
+      );
     }
   };
 

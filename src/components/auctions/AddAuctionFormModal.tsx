@@ -25,10 +25,25 @@ type Props = {
 const createAuctionSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
-  startingPrice: z.string().min(1, "Starting price is required"),
+  startingPrice: z.coerce
+    .number()
+    .positive()
+    .min(1, "Starting price must be atleast 1 EUR"),
   buyNowPrice: z.coerce.number().positive().optional(),
-  startDate: z.string().min(1, "Start date is required"),
-  endDate: z.string().min(1, "End date is required"),
+  startDate: z
+    .string()
+    .min(1, "Start date is required")
+    .refine(
+      (date) => new Date(date) > new Date(Date.now()),
+      "Start date must be in the future",
+    ),
+  endDate: z
+    .string()
+    .min(1, "End date is required")
+    .refine(
+      (date) => new Date(date) > new Date(Date.now()),
+      "End date must be in the future",
+    ),
   categoryId: z.coerce.number().int().min(1, "Category is required"),
 });
 
@@ -41,6 +56,7 @@ function AddAuctionForm({ isOpen, onClose }: Props) {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(createAuctionSchema),
@@ -73,6 +89,8 @@ function AddAuctionForm({ isOpen, onClose }: Props) {
 
       await createAuction(formData);
       alert("Auction created successfully!");
+      reset();
+      setImages([]);
       onClose();
     } catch (error) {
       console.log(error);

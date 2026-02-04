@@ -11,13 +11,12 @@ type Props = {
 function TopBar({ onCreateAuction, onOpenProfile }: Props) {
   const { user, logout } = useAuth();
 
-  const avatarSrc = user?.avatarUrl
-    ? `${API_BASE_URL}${user.avatarUrl}`
-    : null;
+  // Determine avatar source or fallback
+  const avatarSrc = user?.avatarUrl ? `${API_BASE_URL}${user.avatarUrl}` : null;
 
   return (
     <div className="flex items-center px-5 pt-2 pb-2 rounded-b-md bg-neutral-950">
-      {/* Logo */}
+      {/* LOGO */}
       <NavLink to="/" onClick={logout}>
         <img
           src="/logo.png"
@@ -26,9 +25,10 @@ function TopBar({ onCreateAuction, onOpenProfile }: Props) {
         />
       </NavLink>
 
-      {/* Nav pills */}
+      {/* NAVIGATION LINKS */}
       <div className="flex h-12 p-1 my-auto ml-5 bg-[#4A1622] rounded-full border border-[#7A2E3A]">
         <div className="flex">
+          {/* Link to the auctions page */}
           <NavLink
             to="/auctions"
             className={({ isActive }) =>
@@ -44,6 +44,8 @@ function TopBar({ onCreateAuction, onOpenProfile }: Props) {
             Auctions
           </NavLink>
 
+          {/* Admin-only Categories Link */}
+          {/* Displays only if the logged-in user has an 'admin' role */}
           {user?.role === "admin" && (
             <NavLink
               to="/admin/categories"
@@ -61,6 +63,7 @@ function TopBar({ onCreateAuction, onOpenProfile }: Props) {
             </NavLink>
           )}
 
+          {/* Link to the user profile page */}
           <NavLink
             to="/profile"
             className={({ isActive }) =>
@@ -78,8 +81,8 @@ function TopBar({ onCreateAuction, onOpenProfile }: Props) {
         </div>
       </div>
 
-      {/* Actions */}
       <div className="flex items-center gap-3 ml-auto">
+        {/* CREATE AUCTION BUTTON */}
         <button
           onClick={onCreateAuction}
           className="flex items-center gap-1 bg-[#E6C76E] text-[#3B0F19] px-4 py-2 rounded-lg text-sm font-semibold hover:brightness-95 transition"
@@ -88,7 +91,7 @@ function TopBar({ onCreateAuction, onOpenProfile }: Props) {
           Create auction
         </button>
 
-        {/* Avatar */}
+        {/* OPEN PROFILE BUTTON */}
         <button
           onClick={onOpenProfile}
           className="h-15 w-15 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center border border-[#7A2E3A] hover:ring-2 hover:ring-[#E6C76E]/60 transition"

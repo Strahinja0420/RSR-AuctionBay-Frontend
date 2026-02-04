@@ -5,6 +5,6 @@ export type User = {
   role: "user" | "admin";
   avatarUrl?: string | null;
 
-  createdAt: string; // ISO string from backend
+  createdAt: string;
   updatedAt: string;
 };

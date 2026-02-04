@@ -9,9 +9,9 @@ import MyWon from "../components/profile/AuctionsFilter/MyWon";
 
 function ProfilePage() {
   const { user } = useAuth();
-  const { userAuctions,auctions } = useAuction();
+  const { userAuctions, auctions } = useAuction();
   const [activeTab, setActiveTab] = useState<"myAuctions" | "bidding" | "won">(
-    "myAuctions"
+    "myAuctions",
   );
   //console.log(user);
 
@@ -20,7 +20,7 @@ function ProfilePage() {
   const activeBids = userAuctions.filter((x) => x.status === "active").length;
 
   const wonAuctions = auctions.filter(
-    (x) => x.status === "ended" && x.winnerId === user?.id
+    (x) => x.status === "ended" && x.winnerId === user?.id,
   ).length;
 
   const totalSpent = auctions
@@ -30,12 +30,14 @@ function ProfilePage() {
   return (
     <>
       <PageWithTopBar />
+
+      {/* MAIN CONTENT AREA */}
       <div className="w-full min-h-screen pt-10 pl-5 overflow-hidden bg-gray-50">
         <p className="text-2xl font-semibold text-[#7A2E3A] mb-5">
           <span className="font-bold">Welcome : </span>{" "}
           <span className="text-black">{user?.username}</span>
         </p>
-
+        {/* STAT CARDS SECTION */}
         <div className="grid grid-cols-1 gap-8 mb-8 md:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="My Auctions"
@@ -62,6 +64,7 @@ function ProfilePage() {
           />
         </div>
 
+        {/* TAB NAVIGATION SECTION */}
         <div className="flex items-center justify-center mx-auto my-10 space-x-8 overflow-auto bg-neutral-800 w-fit rounded-2xl">
           <div className="px-1 py-1 bg-neutral-800 rounded-4xl">
             <button
@@ -96,6 +99,7 @@ function ProfilePage() {
             </button>
           </div>
         </div>
+        {/* TAB CONTENT */}
         {activeTab === "myAuctions" ? (
           <MyAuctions />
         ) : activeTab === "bidding" ? (

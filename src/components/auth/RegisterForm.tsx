@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import type { RegisterType } from "../../types/Registration.type";
 
-const loginSchema = z.object({
+const registerSchema = z.object({
   username: z.string().min(1, "Username is required"),
   email: z.string().min(1, "Email is required").email("Invalid email address"),
   password: z
@@ -13,7 +13,7 @@ const loginSchema = z.object({
   isAdmin: z.boolean().optional(),
 });
 
-type FormFields = z.infer<typeof loginSchema>;
+type FormFields = z.infer<typeof registerSchema>;
 
 type RegisterFormProps = {
   onSubmit: (data: RegisterType) => void;
@@ -25,7 +25,7 @@ function RegisterForm({ onSubmit }: RegisterFormProps) {
     handleSubmit,
     formState: { errors },
   } = useForm<FormFields>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       username: "",
       email: "",

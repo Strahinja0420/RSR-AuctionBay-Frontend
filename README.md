@@ -88,6 +88,7 @@ The frontend application will be available at: http://localhost:5173.
 
 ## Links
 
-- Git repository: https://github.com/USERNAME/REPO_NAME
-- Trello board: (to be added)
-- Deployed application: (to be added)
+- Backend Git repository: https://github.com/Strahinja0420/RSR-AuctionBay-Backend
+- Frontend Git repository: https://github.com/Strahinja0420/RSR-AuctionBay-Frontend
+- Trello board: https://trello.com/b/zsR8Hb87/rsr-auctionbay
+- Deployed application (Vercel): https://rsr-auction-bay-frontend.vercel.app

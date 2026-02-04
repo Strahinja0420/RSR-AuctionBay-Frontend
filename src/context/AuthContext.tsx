@@ -1,13 +1,6 @@
 import { createContext, useEffect, useState, type ReactNode } from "react";
 import api from "../api/axios";
-
-type User = {
-  id: string;
-  email: string;
-  role: string;
-  username: string;
-  avatarUrl?: string | null;
-};
+import type { User } from "../types/User.type";
 
 export type AuthContextType = {
   user: User | null;
@@ -39,34 +32,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const isAuthenticated = !!user;
 
   const login = async (email: string, password: string) => {
-    //console.log({email,password});
+    const response = await api.post("/auth/login", {
+      email,
+      password,
+    });
+    console.log(response.data);
 
-    try {
-      const response = await api.post("/auth/login", {
-        email,
-        password,
-      });
-      console.log(response.data);
+    const user = response.data.user;
+    const accessToken = response.data.access_token;
 
-      const user = response.data.user;
-      const accessToken = response.data.access_token;
-
-      localStorage.setItem("access_token", accessToken);
-      setUser(user);
-      console.log(`Login successfull your key is : ${accessToken}`);
-    } catch (error: any) {
-      // Axios error
-      if (error.response) {
-        // Backend responded with status code
-        const message =
-          error.response.data?.message || "Invalid email or password";
-
-        throw new Error(message);
-      }
-
-      // Network / unknown error
-      throw new Error("Unable to connect to server");
-    }
+    localStorage.setItem("access_token", accessToken);
+    setUser(user);
   };
 
   const register = async (
@@ -75,32 +51,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
     password: string,
     role?: string,
   ) => {
-    try {
-      const response = await api.post("auth/register", {
-        username,
-        email,
-        password,
-        role,
-      });
+    const response = await api.post("auth/register", {
+      username,
+      email,
+      password,
+      role,
+    });
 
-      const user = response.data.user;
-      const accessToken = response.data.access_token;
-      localStorage.setItem("access_token", accessToken);
-      setUser(user);
-      console.log(`Registration successfull your key is : ${accessToken}`);
-    } catch (error: any) {
-      // Axios error
-      if (error.response) {
-        // Backend responded with status code
-        const message =
-          error.response.data?.message || "Invalid email or password";
-
-        throw new Error(message);
-      }
-
-      // Network / unknown error
-      throw new Error("Unable to connect to server");
-    }
+    const user = response.data.user;
+    const accessToken = response.data.access_token;
+    localStorage.setItem("access_token", accessToken);
+    setUser(user);
   };
 
   const logout = () => {
@@ -119,11 +80,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const fetchUser = async () => {
       try {
         const response = await api.get("/users/me");
-
         setUser(response.data);
-        //console.log(isAuthenticated);
-        //isAuthenticated == true;
-      } catch (error) {
+      } catch (error: any) {
         localStorage.removeItem("access_token");
         setUser(null);
       } finally {
@@ -135,43 +93,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   const updateUser = async (username: string, email: string) => {
-    try {
-      const response = await api.patch("/users/me", {
-        username,
-        email,
-      });
+    const response = await api.patch("/users/me", {
+      username,
+      email,
+    });
 
-      const updateUser = response.data;
-
-      setUser(updateUser);
-
-      return updateUser;
-    } catch (error: any) {
-      if (error.response) {
-        throw new Error(
-          error.response.data?.message || "Failed to update user",
-        );
-      }
-
-      throw new Error("Unable to connect to server");
-    }
+    const updateUser = response.data;
+    setUser(updateUser);
+    return updateUser;
   };
 
   const updatePassword = async (oldPassword: string, newPassword: string) => {
-    try {
-      await api.patch("/users/me/password", {
-        oldPassword,
-        newPassword,
-      });
-    } catch (error: any) {
-      if (error.response) {
-        throw new Error(
-          error.response.data?.message || "Failed to update password",
-        );
-      }
-
-      throw new Error("Unable to connect to server");
-    }
+    await api.patch("/users/me/password", {
+      oldPassword,
+      newPassword,
+    });
   };
 
   return (

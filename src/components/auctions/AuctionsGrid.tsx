@@ -8,8 +8,6 @@ type Props = {
   onlyActive?: boolean;
 };
 
-//.filter((auction) => auction.status === "active")     IN CASE U WANT ONLY ACTIVE AUCTIONS ADD THIS BEFORE .MAP
-
 function AuctionsGrid({ auctions, title, onlyActive = false }: Props) {
   const filtered = onlyActive
     ? auctions.filter((a) => a.status === "active")
@@ -32,9 +30,7 @@ function AuctionsGrid({ auctions, title, onlyActive = false }: Props) {
     return new Date(b.endDate).getTime() - new Date(a.endDate).getTime();
   });
 
-
-  //console.log(auctions);
-  
+  //console.log(filtered);
 
   return (
     <div className="mx-5 mt-2 mb-10">
@@ -45,16 +41,15 @@ function AuctionsGrid({ auctions, title, onlyActive = false }: Props) {
 
       {/* Grid */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-6">
-        {sortedAuctions
-          .map((auction) => (
-            <NavLink
-              key={auction.id}
-              to={`/auction/${auction.id}`}
-              state={{ auction }}
-            >
-              <AuctionCard auction={auction} />
-            </NavLink>
-          ))}
+        {sortedAuctions.map((auction) => (
+          <NavLink
+            key={auction.id}
+            to={`/auction/${auction.id}`}
+            state={{ auction }}
+          >
+            <AuctionCard auction={auction} />
+          </NavLink>
+        ))}
       </div>
     </div>
   );

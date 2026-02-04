@@ -18,6 +18,7 @@ import EditCategoryModal from "../../components/admin/EditCategoryModal";
 import type { Category } from "../../types/Category.type";
 
 function AdminCategoriesPage() {
+  // STATE MANAGEMENT
   const [openAuction, setOpenAuction] = useState(false);
   const [openProfile, setOpenProfile] = useState(false);
   const [openCategoryModal, setOpenCategoryModal] = useState(false);
@@ -32,18 +33,25 @@ function AdminCategoriesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
-  // Filter Logic
+  // FILTER & SEARCH LOGIC
   const filteredCategories = categories.filter((category) => {
     const matchesSearch = category.name
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
+
+    const hasActiveAuction = auctions.some(
+      (a: any) => a.categoryId === category.id && a.status === "active",
+    );
+
     const matchesStatus =
       statusFilter === "All" ||
-      (statusFilter === "Active" && category.isActive) ||
-      (statusFilter === "Not-Active" && !category.isActive);
+      (statusFilter === "Active" && hasActiveAuction) ||
+      (statusFilter === "Not-Active" && !hasActiveAuction);
+
     return matchesSearch && matchesStatus;
   });
 
+  // PAGINATION CALCULATION
   const totalPages = Math.ceil(filteredCategories.length / itemsPerPage);
   const paginatedCategories = filteredCategories.slice(
     (currentPage - 1) * itemsPerPage,
@@ -68,7 +76,6 @@ function AdminCategoriesPage() {
         refetchAuctions();
       } catch (error) {
         console.error("Failed to delete category:", error);
-        alert("Failed to delete category. It might be in use by auctions.");
       }
     }
   };
@@ -149,8 +156,10 @@ function AdminCategoriesPage() {
               </div>
             </div>
 
+            {/* TABLE SECTION */}
             <div className="overflow-x-auto">
               <table className="w-full text-left">
+                {/* Table Header */}
                 <thead className="bg-gray-50 text-[10px] uppercase tracking-wider font-bold text-gray-500 border-b border-gray-100">
                   <tr>
                     <th className="px-6 py-4">Name</th>
@@ -159,42 +168,63 @@ function AdminCategoriesPage() {
                     <th className="px-6 py-4 text-right">Actions</th>
                   </tr>
                 </thead>
+                {/* Table Body */}
                 <tbody className="divide-y divide-gray-50">
                   {paginatedCategories.map((category) => {
-                    const auctionCount = auctions.filter(
-                      (a: any) => Number(a.categoryId) === category.id,
-                    ).length;
+                    // Calculate item count and status for each category row
+                    const categoryAuctions = auctions.filter(
+                      (a) => a.categoryId === category.id,
+                    );
+                    const auctionCount = categoryAuctions.length;
+
                     return (
                       <tr
                         key={category.id}
                         className="hover:bg-gray-50/50 transition-colors"
                       >
+                        {/* Category Name */}
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className="text-sm font-semibold text-gray-900">
                             {category.name}
                           </span>
                         </td>
+                        {/* Auction Counter */}
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 font-medium">
                           {auctionCount}
                         </td>
+                        {/* Active/Inactive Badge */}
                         <td className="px-6 py-4 whitespace-nowrap text-center">
-                          <span
-                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide ${category.isActive ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600"}`}
-                          >
-                            {category.isActive ? "Active" : "Inactive"}
-                          </span>
+                          {(() => {
+                            const hasActiveAuction = categoryAuctions.some(
+                              (a) => a.status === "active",
+                            );
+                            return (
+                              <span
+                                className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide ${
+                                  hasActiveAuction
+                                    ? "bg-emerald-50 text-emerald-600"
+                                    : "bg-rose-50 text-rose-600"
+                                }`}
+                              >
+                                {hasActiveAuction ? "Active" : "Inactive"}
+                              </span>
+                            );
+                          })()}
                         </td>
+                        {/* Row Actions (Edit/Delete) */}
                         <td className="px-6 py-4 whitespace-nowrap text-right">
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => handleEdit(category)}
                               className="p-1.5 text-gray-400 hover:text-gray-600 transition-colors"
+                              title="Edit Category"
                             >
                               <Edit2 size={16} />
                             </button>
                             <button
                               onClick={() => handleDelete(category.id)}
                               className="p-1.5 text-gray-400 hover:text-rose-600 transition-colors"
+                              title="Delete Category"
                             >
                               <Trash2 size={16} />
                             </button>

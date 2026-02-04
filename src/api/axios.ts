@@ -27,4 +27,35 @@ api.interceptors.request.use(
   },
 );
 
+// This runs AFTER every response (including errors)
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error("API call failed:", error);
+
+    if (error.response) {
+      const status = error.response.status;
+      const message = error.response.data?.message || "An error occurred";
+
+      if (status === 401) {
+        //Unauthorized
+        alert("Session expired. Please login again.");
+        localStorage.removeItem("access_token");
+        window.location.href = "/login";
+      } else if (status === 404) {
+        //Not found
+        alert("Resource not found");
+      } else {
+        alert(message);
+      }
+    } else if (error.request) {
+      alert("Network error. Please check your connection.");
+    } else {
+      alert("An unexpected error occurred");
+    }
+
+    return Promise.reject(error);
+  },
+);
+
 export default api;
