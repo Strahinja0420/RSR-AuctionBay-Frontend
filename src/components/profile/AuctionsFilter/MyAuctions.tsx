@@ -1,11 +1,10 @@
-import { useAuction } from "../../../hooks/useAuctions";
+import { useAuctions } from "../../../hooks/useAuctions";
 import AuctionsGrid from "../../auctions/AuctionsGrid";
 
 const MyAuctions = () => {
-  const { userAuctions } = useAuction();
+  const { userAuctions } = useAuctions();
 
   //console.log(userAuctions);
-  
 
   if (userAuctions.length === 0) {
     return (

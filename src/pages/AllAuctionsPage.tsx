@@ -1,9 +1,9 @@
-import { useAuction } from "../hooks/useAuctions";
+import { useAuctions } from "../hooks/useAuctions";
 import AuctionsGrid from "../components/auctions/AuctionsGrid";
 import PageWithTopBar from "../components/layout/PageWithTopBar";
 
 function AllAuctionsPage() {
-  const { auctions } = useAuction();
+  const { auctions } = useAuctions();
 
   const activeAuctions = auctions.filter((a) => a.status === "active");
 

@@ -2,13 +2,13 @@ import { useState } from "react";
 import TopBar from "./TopBar";
 import AddAuctionForm from "../auctions/AddAuctionFormModal";
 import ProfileModals from "../ProfileModals";
-import { useAuction } from "../../hooks/useAuctions";
+import { useAuctions } from "../../hooks/useAuctions";
 
 function PageWithTopBar() {
   const [openAuction, setOpenAuction] = useState(false);
   const [openProfile, setOpenProfile] = useState(false);
 
-  const { refetch } = useAuction();
+  const { refetch } = useAuctions();
 
   return (
     <>
@@ -20,7 +20,7 @@ function PageWithTopBar() {
         <AddAuctionForm
           isOpen={openAuction}
           onClose={() => {
-            setOpenAuction(false), refetch();
+            (setOpenAuction(false), refetch());
           }}
         ></AddAuctionForm>
         <ProfileModals

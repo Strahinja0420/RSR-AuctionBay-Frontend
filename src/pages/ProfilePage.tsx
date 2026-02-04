@@ -1,7 +1,7 @@
 import { useAuth } from "../hooks/useAuth";
 import PageWithTopBar from "../components/layout/PageWithTopBar";
 import { useState } from "react";
-import { useAuction } from "../hooks/useAuctions";
+import { useAuctions } from "../hooks/useAuctions";
 import StatCard from "../components/profile/StatCard";
 import MyAuctions from "../components/profile/AuctionsFilter/MyAuctions";
 import MyBidding from "../components/profile/AuctionsFilter/MyBidding";
@@ -9,7 +9,7 @@ import MyWon from "../components/profile/AuctionsFilter/MyWon";
 
 function ProfilePage() {
   const { user } = useAuth();
-  const { userAuctions, auctions } = useAuction();
+  const { userAuctions, auctions } = useAuctions();
   const [activeTab, setActiveTab] = useState<"myAuctions" | "bidding" | "won">(
     "myAuctions",
   );

@@ -1,10 +1,10 @@
-import { useAuction } from "../../../hooks/useAuctions";
+import { useAuctions } from "../../../hooks/useAuctions";
 import { useAuth } from "../../../hooks/useAuth";
 import AuctionsGrid from "../../auctions/AuctionsGrid";
 
 const MyAuctions = () => {
   const { user } = useAuth();
-  const { auctions } = useAuction();
+  const { auctions } = useAuctions();
 
   //console.log(userAuctions);
   //console.log(user?.id);
@@ -15,7 +15,7 @@ const MyAuctions = () => {
   const biddingAuctions = auctions.filter(
     (auction) =>
       auction.status === "active" &&
-      auction.bids?.some((bid) => bid.placedById === user.id)
+      auction.bids?.some((bid) => bid.placedById === user.id),
   );
 
   //console.log(biddingAuctions);

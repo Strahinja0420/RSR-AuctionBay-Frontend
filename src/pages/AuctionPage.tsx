@@ -1,21 +1,19 @@
 import { useLocation, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import * as z from "zod";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { bidOnAuction } from "../api/auctions.api";
 import { format } from "date-fns";
 import { API_BASE_URL } from "../api/axios";
-import type { Bid } from "../types/Bid.type";
-import { useBidders } from "../hooks/useBidders";
+import { useBids } from "../hooks/useBids";
 import PageWithTopBar from "../components/layout/PageWithTopBar";
-import { fetchBidsByAuction } from "../api/bids.api";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, LoaderCircle } from "lucide-react";
+import { useAuction } from "../hooks/useAuction";
 
 function AuctionPage() {
   const { state } = useLocation();
   const { id } = useParams();
-  const auction = state?.auction;
+  const { auction, loading, error } = useAuction(id, state?.auction);
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
@@ -30,31 +28,25 @@ function AuctionPage() {
 
   type FormFields = z.infer<typeof bidSchema>;
 
-  const [bids, setBids] = useState<Bid[]>(auction?.bids ?? []);
+  const { bids, bidders, placeBid } = useBids(id);
 
-  const { bidders } = useBidders(bids);
-
-  if (!auction) {
-    return <div className="p-6">Loading auction…</div>;
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center w-full min-h-screen gap-4 bg-gray-50">
+        <LoaderCircle className="w-12 h-12 animate-spin text-[#7A2E3A]" />
+        <p className="text-neutral-600 animate-pulse">
+          Fetching the latest auction data...
+        </p>
+      </div>
+    );
+  } else if (error) {
+    return <h2>Auction not found</h2>;
+  } else if (!auction) {
+    return <h2>Not found</h2>;
   }
 
   const images = auction.images;
   const currentImage = images.length > 0 ? images[selectedImageIndex] : null;
-
-  useEffect(() => {
-    if (!id) return;
-
-    const loadBids = async () => {
-      try {
-        const data = await fetchBidsByAuction(id);
-        setBids(data);
-      } catch (err) {
-        console.error("Failed to fetch bids", err);
-      }
-    };
-
-    loadBids();
-  }, [id]);
 
   const {
     register,
@@ -67,12 +59,8 @@ function AuctionPage() {
   });
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    if (!id) return;
-
     try {
-      await bidOnAuction(data.bid, id);
-      const updatedBids = await fetchBidsByAuction(id);
-      setBids(updatedBids);
+      await placeBid(data.bid);
     } catch (error) {
       console.error("Bid failed", error);
     }

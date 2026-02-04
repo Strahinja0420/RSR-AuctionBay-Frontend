@@ -10,7 +10,7 @@ import {
 import TopBar from "../../components/layout/TopBar";
 import AddAuctionForm from "../../components/auctions/AddAuctionFormModal";
 import ProfileModals from "../../components/ProfileModals";
-import { useAuction } from "../../hooks/useAuctions";
+import { useAuctions } from "../../hooks/useAuctions";
 import { useCategories } from "../../hooks/useCategories";
 import { deleteCategory } from "../../api/categories.api";
 import AddCategoryModal from "../../components/admin/AddCategoryModal";
@@ -24,7 +24,7 @@ function AdminCategoriesPage() {
   const [openCategoryModal, setOpenCategoryModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [openEditModal, setOpenEditModal] = useState(false);
-  const { auctions, refetch: refetchAuctions } = useAuction();
+  const { auctions, refetch: refetchAuctions } = useAuctions();
   const { categories, refetch: refetchCategories } = useCategories();
 
   // Pagination & Filtering State

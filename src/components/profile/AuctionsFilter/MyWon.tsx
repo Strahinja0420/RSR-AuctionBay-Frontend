@@ -1,18 +1,16 @@
 import { useAuth } from "../../../hooks/useAuth";
-import { useAuction } from "../../../hooks/useAuctions";
+import { useAuctions } from "../../../hooks/useAuctions";
 import AuctionsGrid from "../../auctions/AuctionsGrid";
 
 const MyWon = () => {
   const { user } = useAuth();
-  const { auctions } = useAuction();
+  const { auctions } = useAuctions();
 
   if (!user) return null;
 
   const wonAuctions = auctions.filter(
-    (auction) => auction.status === "ended" && auction.winnerId === user.id
+    (auction) => auction.status === "ended" && auction.winnerId === user.id,
   );
-
-  
 
   if (wonAuctions.length === 0) {
     return (
