@@ -10,13 +10,26 @@ export const useAuction = (id: string | undefined) => {
     queryFn: () => getAuctionById(id!),
     enabled: !!id,
     placeholderData: () => {
-      // 1. Peek into the cache where ['auctions'] is stored
       const allAuctions = queryClient.getQueryData<Auction[]>(["auctions"]);
 
-      // 2. Try to find the specific auction by ID
       return allAuctions?.find((a) => a.id === id);
     },
   });
 
-  return { auction: data, error, loading: isLoading, refetch };
+  //I MADE THIS JUST FOR TESTING PURPOSES I KNOW ITS BAD IN THIS EXAMPLE (USER CAN HOVER OVER 20 AUCTION INSTANTLY AND MAKE IT LAG) AND I KNOW I CAN MAKE IT SO WHEN A USER IS HOVERING FOR X AMOUNT OF TIME AND THEN PREFETCH BUT I AINT DOIN THAT SHIT NOW :P
+  const prefetchAuction = (auctionId: string) => {
+    queryClient.prefetchQuery({
+      queryKey: ["auction", auctionId],
+      queryFn: () => getAuctionById(auctionId),
+      staleTime: 60 * 1000,
+    });
+  };
+
+  return {
+    auction: data,
+    error,
+    loading: isLoading,
+    refetch,
+    prefetch: prefetchAuction,
+  };
 };

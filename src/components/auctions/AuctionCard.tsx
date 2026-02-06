@@ -5,6 +5,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import { deleteAuction } from "../../api/auctions.api";
 import { useState } from "react";
 import EditAuctionForm from "./EditAuctionFormModal";
+import { useAuction } from "../../hooks/useAuction";
 
 type Props = {
   auction: Auction;
@@ -13,6 +14,7 @@ type Props = {
 function AuctionCard({ auction }: Props) {
   const { user } = useAuth();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const { prefetch } = useAuction(undefined);
 
   const imageUrl =
     auction.images.length > 0 ? auction.images[0].imageUrl : null;
@@ -55,6 +57,7 @@ function AuctionCard({ auction }: Props) {
           flex flex-col
           h-full
         "
+        onMouseEnter={() => prefetch(auction.id)}
       >
         {/* IMAGE */}
         <div className="relative h-48 bg-[#F6F2F0] flex items-center justify-center shrink-0">

@@ -1,9 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAuctions, getUserAuctions } from "../api/auctions.api";
 import { useAuth } from "./useAuth";
+import type { Auction } from "../types/Auction.type";
 
 export const useAuctions = () => {
   const { user } = useAuth();
+
+  const queryClient = useQueryClient();
 
   const allAuctionsQuery = useQuery({
     queryKey: ["auctions"],
@@ -14,6 +17,11 @@ export const useAuctions = () => {
     queryKey: ["auctions", "user"],
     queryFn: getUserAuctions,
     enabled: !!user,
+    placeholderData: () => {
+      const allAuctions = queryClient.getQueryData<Auction[]>(["auctions"]);
+
+      return allAuctions?.filter((a) => a.owner.id === user?.id);
+    },
   });
 
   return {
