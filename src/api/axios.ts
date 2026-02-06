@@ -39,9 +39,9 @@ api.interceptors.response.use(
 
       if (status === 401) {
         //Unauthorized
-        alert("Session expired. Please login again.");
+        //alert("Session expired. Please login again.");
         localStorage.removeItem("access_token");
-        window.location.href = "/login";
+        //window.location.href = "/login";
       } else if (status === 404) {
         //Not found
         alert("Resource not found");

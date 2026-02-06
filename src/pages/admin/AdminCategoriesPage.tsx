@@ -24,7 +24,7 @@ function AdminCategoriesPage() {
   const [openCategoryModal, setOpenCategoryModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [openEditModal, setOpenEditModal] = useState(false);
-  const { auctions, refetch: refetchAuctions } = useAuctions();
+  const { auctions, refetchAuctions } = useAuctions();
   const { categories, refetch: refetchCategories } = useCategories();
 
   // Pagination & Filtering State

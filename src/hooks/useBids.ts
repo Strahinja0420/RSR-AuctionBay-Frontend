@@ -1,52 +1,31 @@
-import { useState, useEffect, useCallback } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchBidsByAuction } from "../api/bids.api";
 import { bidOnAuction } from "../api/auctions.api";
-import { useBidders } from "./useBidders";
-import type { Bid } from "../types/Bid.type";
 
 export const useBids = (auctionId: string | undefined) => {
-  const [bids, setBids] = useState<Bid[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  const queryClient = useQueryClient();
 
-  const { bidders, loading: loadingBidders } = useBidders(bids);
+  const allBidsQuery = useQuery({
+    queryKey: ["bids", auctionId],
+    queryFn: () => fetchBidsByAuction(auctionId!),
+    enabled: !!auctionId,
+  });
 
-  const fetchBids = useCallback(async () => {
-    if (!auctionId) return;
+  const placeBidMutation = useMutation({
+    mutationFn: (amount: number) => bidOnAuction(amount, auctionId!),
 
-    setLoading(true);
-    try {
-      const data = await fetchBidsByAuction(auctionId);
-      setBids(data);
-      setError(null);
-    } catch (err: any) {
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [auctionId]);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bids", auctionId] });
 
-  const placeBid = async (amount: number) => {
-    if (!auctionId) return;
+      queryClient.invalidateQueries({ queryKey: ["auction", auctionId] });
 
-    try {
-      await bidOnAuction(amount, auctionId);
-      await fetchBids();
-    } catch (error: any) {
-      throw error;
-    }
-  };
-
-  useEffect(() => {
-    fetchBids();
-  }, [fetchBids]);
+      queryClient.invalidateQueries({ queryKey: ["auctions"] });
+    },
+  });
 
   return {
-    bids,
-    bidders,
-    loading: loading || loadingBidders,
-    error,
-    placeBid,
-    refetch: fetchBids,
+    placeBid: placeBidMutation.mutateAsync,
+    bids: allBidsQuery.data ?? [],
+    loading: allBidsQuery.isLoading || placeBidMutation.isPending,
   };
 };

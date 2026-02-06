@@ -1,38 +1,22 @@
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAuctionById } from "../api/auctions.api";
 import type { Auction } from "../types/Auction.type";
-import { useEffect, useState } from "react";
 
-export const useAuction = (id: string | undefined, initialData?: Auction) => {
-  const [auction, setAuction] = useState<Auction | null>(initialData || null);
-  const [loading, setLoading] = useState(!initialData);
-  const [error, setError] = useState<Error | null>(null);
+export const useAuction = (id: string | undefined) => {
+  const queryClient = useQueryClient();
 
-  const fetchAuction = async () => {
-    if (!id) {
-      setAuction(null);
-      setLoading(false);
-    } else {
-      try {
-        if (!auction) setLoading(true);
-        const data = await getAuctionById(id);
-        setAuction(data);
-      } catch (error: any) {
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
+  const { data, error, isLoading, refetch } = useQuery({
+    queryKey: ["auction", id],
+    queryFn: () => getAuctionById(id!),
+    enabled: !!id,
+    placeholderData: () => {
+      // 1. Peek into the cache where ['auctions'] is stored
+      const allAuctions = queryClient.getQueryData<Auction[]>(["auctions"]);
 
-  useEffect(() => {
-    setAuction(initialData || null);
-    fetchAuction();
-  }, [id, initialData]);
+      // 2. Try to find the specific auction by ID
+      return allAuctions?.find((a) => a.id === id);
+    },
+  });
 
-  return {
-    auction,
-    loading,
-    error,
-    refetch: fetchAuction,
-  };
+  return { auction: data, error, loading: isLoading, refetch };
 };

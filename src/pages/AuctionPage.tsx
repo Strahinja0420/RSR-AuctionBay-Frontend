@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useState } from "react";
 import * as z from "zod";
 import { useForm, type SubmitHandler } from "react-hook-form";
@@ -11,9 +11,8 @@ import { ChevronLeft, ChevronRight, LoaderCircle } from "lucide-react";
 import { useAuction } from "../hooks/useAuction";
 
 function AuctionPage() {
-  const { state } = useLocation();
   const { id } = useParams();
-  const { auction, loading, error } = useAuction(id, state?.auction);
+  const { auction, loading, error } = useAuction(id);
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
@@ -28,7 +27,7 @@ function AuctionPage() {
 
   type FormFields = z.infer<typeof bidSchema>;
 
-  const { bids, bidders, placeBid } = useBids(id);
+  const { bids, placeBid } = useBids(id);
 
   if (loading) {
     return (
@@ -205,8 +204,6 @@ function AuctionPage() {
 
             {bids.length > 0 ? (
               bids.map((bid) => {
-                const bidder = bidders.find((u) => u.id === bid.placedById);
-
                 return (
                   <div
                     key={bid.id}
@@ -214,7 +211,7 @@ function AuctionPage() {
                   >
                     <div className="grid items-center grid-cols-3 gap-4">
                       <p className="text-sm font-medium text-neutral-800">
-                        {bidder?.username ?? "Loading…"}
+                        {bid.user?.username ?? "Anonymous"}
                       </p>
 
                       <p className="text-xs text-center text-neutral-500">
