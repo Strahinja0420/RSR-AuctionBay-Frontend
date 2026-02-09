@@ -34,6 +34,7 @@ export const useAuctions = () => {
   };
 };
 
+/*
 const testLoadingAllAuctions = async () => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
   throw new Error("Simulated Error");
@@ -44,3 +45,5 @@ const testLoadingUserAuctions = async () => {
   await new Promise((resolve) => setTimeout(resolve, 2000));
   return getUserAuctions();
 };
+
+ */
