@@ -8,7 +8,7 @@ function PageWithTopBar() {
   const [openAuction, setOpenAuction] = useState(false);
   const [openProfile, setOpenProfile] = useState(false);
 
-  const { refetch } = useAuctions();
+  const { refetchAuctions } = useAuctions();
 
   return (
     <>
@@ -16,18 +16,18 @@ function PageWithTopBar() {
         onCreateAuction={() => setOpenAuction(true)}
         onOpenProfile={() => setOpenProfile(true)}
       />
-      <div className="pt-2 bg-gray-50">
-        <AddAuctionForm
-          isOpen={openAuction}
-          onClose={() => {
-            (setOpenAuction(false), refetch());
-          }}
-        ></AddAuctionForm>
-        <ProfileModals
-          isOpen={openProfile}
-          onClose={() => setOpenProfile(false)}
-        ></ProfileModals>
-      </div>
+      {/* GLOBAL MODALS */}
+      <AddAuctionForm
+        isOpen={openAuction}
+        onClose={() => {
+          setOpenAuction(false);
+          refetchAuctions();
+        }}
+      />
+      <ProfileModals
+        isOpen={openProfile}
+        onClose={() => setOpenProfile(false)}
+      />
     </>
   );
 }

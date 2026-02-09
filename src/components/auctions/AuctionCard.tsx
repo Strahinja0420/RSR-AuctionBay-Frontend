@@ -6,6 +6,8 @@ import { deleteAuction } from "../../api/auctions.api";
 import { useState } from "react";
 import EditAuctionForm from "./EditAuctionFormModal";
 import { useAuction } from "../../hooks/useAuction";
+import { motion } from "framer-motion";
+import { FADE_UP, HOVER_BOUNCE } from "../../utils/animations";
 
 type Props = {
   auction: Auction;
@@ -44,18 +46,18 @@ function AuctionCard({ auction }: Props) {
   return (
     <>
       {/* AUCTION CARD CONTAINER */}
-      <div
+      <motion.div
+        variants={FADE_UP}
+        {...HOVER_BOUNCE}
         className="
           group
           bg-white
           rounded-3xl
           overflow-hidden
           border border-[#3B0F19]/15
-          transition
-          hover:shadow-xl
-          hover:-translate-y-1
           flex flex-col
           h-full
+          shadow-sm
         "
         onMouseEnter={() => prefetch(auction.id)}
       >
@@ -123,7 +125,7 @@ function AuctionCard({ auction }: Props) {
             )}
           </div>
         </div>
-      </div>
+      </motion.div>
 
       <EditAuctionForm
         isOpen={isEditModalOpen}

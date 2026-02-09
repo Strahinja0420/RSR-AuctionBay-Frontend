@@ -45,18 +45,24 @@ function AllAuctionsPage() {
   }
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen bg-neutral-50">
       <PageWithTopBar />
-      {activeAuctions.length === 0 ? (
-        <p className="text-center text-3xl mt-10 font-bold text-[#3B0F19]">
-          No auctions available currently.
-          <br />
-          Check back soon!
-        </p>
-      ) : (
-        <AuctionsGrid auctions={activeAuctions} title="Auctions" />
-      )}
-    </>
+
+      <main className="flex-1 pb-20">
+        {activeAuctions.length === 0 ? (
+          <div className="flex flex-col items-center justify-center pt-20 px-4 text-center">
+            <p className="text-2xl md:text-3xl font-bold text-[#3B0F19]">
+              No auctions available currently.
+            </p>
+            <p className="text-neutral-500 mt-2">
+              Check back soon for new items!
+            </p>
+          </div>
+        ) : (
+          <AuctionsGrid auctions={activeAuctions} title="Auctions" />
+        )}
+      </main>
+    </div>
   );
 }
 

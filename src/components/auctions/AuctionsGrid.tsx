@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+import { STAGGER_CONTAINER } from "../../utils/animations";
 import type { Auction } from "../../types/Auction.type";
 import AuctionCard from "./AuctionCard";
 import { NavLink } from "react-router-dom";
@@ -40,7 +42,12 @@ function AuctionsGrid({ auctions, title, onlyActive = false }: Props) {
       </h2>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-6">
+      <motion.div
+        variants={STAGGER_CONTAINER}
+        initial="hidden"
+        animate="visible"
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-6"
+      >
         {sortedAuctions.map((auction) => (
           <NavLink
             key={auction.id}
@@ -50,7 +57,7 @@ function AuctionsGrid({ auctions, title, onlyActive = false }: Props) {
             <AuctionCard auction={auction} />
           </NavLink>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 }

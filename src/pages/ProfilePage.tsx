@@ -32,83 +32,87 @@ function ProfilePage() {
       <PageWithTopBar />
 
       {/* MAIN CONTENT AREA */}
-      <div className="w-full min-h-screen pt-10 pl-5 overflow-hidden bg-gray-50">
-        <p className="text-2xl font-semibold text-[#7A2E3A] mb-5">
-          <span className="font-bold">Welcome : </span>{" "}
-          <span className="text-black">{user?.username}</span>
-        </p>
-        {/* STAT CARDS SECTION */}
-        <div className="grid grid-cols-1 gap-8 mb-8 md:grid-cols-2 lg:grid-cols-4">
-          <StatCard
-            title="My Auctions"
-            subtitle="Total created"
-            value={totalAuctions}
-          />
+      <div className="w-full min-h-screen pt-6 md:pt-10 px-4 md:px-8 bg-neutral-50">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#3B0F19] mb-8">
+            Welcome back,{" "}
+            <span className="text-[#7A2E3A]">{user?.username}</span>
+          </h2>
 
-          <StatCard
-            title="Active Auctions"
-            subtitle="Currently running"
-            value={activeBids}
-          />
+          {/* STAT CARDS SECTION */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
+            <StatCard
+              title="My Auctions"
+              subtitle="Total created"
+              value={totalAuctions}
+            />
 
-          <StatCard
-            title="Won Auctions"
-            subtitle="Successfully won"
-            value={wonAuctions}
-          />
+            <StatCard
+              title="Active Auctions"
+              subtitle="Currently running"
+              value={activeBids}
+            />
 
-          <StatCard
-            title="Total Spent"
-            subtitle="All time"
-            value={`€${totalSpent}`}
-          />
-        </div>
+            <StatCard
+              title="Won Auctions"
+              subtitle="Successfully won"
+              value={wonAuctions}
+            />
 
-        {/* TAB NAVIGATION SECTION */}
-        <div className="flex items-center justify-center mx-auto my-10 space-x-8 overflow-auto bg-neutral-800 w-fit rounded-2xl">
-          <div className="px-1 py-1 bg-neutral-800 rounded-4xl">
-            <button
-              onClick={() => setActiveTab("myAuctions")}
-              className={`px-4 py-2 font-bold rounded-2xl transition-all duration-200 ease-in-out ${
-                activeTab === "myAuctions"
-                  ? "bg-[#E6C76E] text-white "
-                  : "text-[#ac1111]  hover:ring-[#E6C76E] hover:ring-2"
-              }`}
-            >
-              My auctions
-            </button>
-            <button
-              onClick={() => setActiveTab("bidding")}
-              className={`px-4 py-2 font-bold rounded-2xl transition-all duration-200 ease-in-out  ${
-                activeTab === "bidding"
-                  ? "bg-[#E6C76E] text-white"
-                  : "text-[#ac1111]  hover:ring-[#E6C76E] hover:ring-2 "
-              }`}
-            >
-              Bidding
-            </button>
-            <button
-              onClick={() => setActiveTab("won")}
-              className={`px-4 py-2 font-bold rounded-2xl transition-all duration-200 ease-in-out ${
-                activeTab === "won"
-                  ? "bg-[#E6C76E] text-white"
-                  : "text-[#ac1111]  hover:ring-[#E6C76E] hover:ring-2"
-              }`}
-            >
-              Won
-            </button>
+            <StatCard
+              title="Total Spent"
+              subtitle="All time"
+              value={`€${totalSpent.toLocaleString()}`}
+            />
+          </div>
+
+          {/* TAB NAVIGATION SECTION */}
+          <div className="flex justify-center mb-10">
+            <div className="inline-flex p-1.5 bg-neutral-900 rounded-2xl shadow-xl overflow-x-auto no-scrollbar">
+              <button
+                onClick={() => setActiveTab("myAuctions")}
+                className={`whitespace-nowrap px-4 md:px-6 py-2.5 text-sm md:text-base font-bold rounded-xl transition-all duration-300 ${
+                  activeTab === "myAuctions"
+                    ? "bg-[#E6C76E] text-[#3B0F19] shadow-inner"
+                    : "text-neutral-400 hover:text-white"
+                }`}
+              >
+                My Auctions
+              </button>
+              <button
+                onClick={() => setActiveTab("bidding")}
+                className={`whitespace-nowrap px-4 md:px-6 py-2.5 text-sm md:text-base font-bold rounded-xl transition-all duration-300 ${
+                  activeTab === "bidding"
+                    ? "bg-[#E6C76E] text-[#3B0F19] shadow-inner"
+                    : "text-neutral-400 hover:text-white"
+                }`}
+              >
+                Bidding
+              </button>
+              <button
+                onClick={() => setActiveTab("won")}
+                className={`whitespace-nowrap px-4 md:px-6 py-2.5 text-sm md:text-base font-bold rounded-xl transition-all duration-300 ${
+                  activeTab === "won"
+                    ? "bg-[#E6C76E] text-[#3B0F19] shadow-inner"
+                    : "text-neutral-400 hover:text-white"
+                }`}
+              >
+                Won
+              </button>
+            </div>
+          </div>
+
+          {/* TAB CONTENT */}
+          <div className="pb-20">
+            {activeTab === "myAuctions" ? (
+              <MyAuctions />
+            ) : activeTab === "bidding" ? (
+              <MyBidding />
+            ) : activeTab === "won" ? (
+              <MyWon />
+            ) : null}
           </div>
         </div>
-        {/* TAB CONTENT */}
-        {activeTab === "myAuctions" ? (
-          <MyAuctions />
-        ) : activeTab === "bidding" ? (
-          <MyBidding />
-        ) : activeTab === "won" ? (
-          <MyWon />
-        ) : (
-          ""
-        )}
       </div>
     </>
   );
